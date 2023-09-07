@@ -1,0 +1,10 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - sed -i "s/#AWS_ACCOUNT_ID/${AWS_ACCOUNT_ID}/" template.yaml
+  build:
+    commands:
+      - sam build
+      - sam deploy
