@@ -28,3 +28,5 @@ Resources:
             ScheduleExpression: 'at(2023-09-07T18:52:00)'
             ScheduleExpressionTimezone: 'Asia/Tokyo'
             RoleArn: arn:aws:iam::#AWS_ACCOUNT_ID:role/EventSchedulerServiceRole
+            RetryPolicy:
+              MaximumRetryAttempts: 0
