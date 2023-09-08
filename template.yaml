@@ -39,6 +39,8 @@ Resources:
     Properties:
       Name: test-api # A name for the API Gateway RestApi resource
       DisableExecuteApiEndpoint: true # Specifies whether clients can invoke your API by using the default execute-api endpoint.
+      EndpointConfiguration:
+        Type: REGIONAL # EDGE | REGIONAL | PRIVATE
       Domain:
         DomainName: api-test.tecotec.co.jp
         CertificateArn: arn-examplearn:aws:acm:ap-northeast-1:965163745124:certificate/ec831bea-cd35-4bc5-a1c9-7ab96219854c
