@@ -3,6 +3,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - AWS_ACCOUNT_ID=`echo ${CODEBUILD_BUILD_ARN} | awk -F ':' '{print $5}'`
       - sed -i "s/#AWS_ACCOUNT_ID/${AWS_ACCOUNT_ID}/" template.yaml
   build:
     commands:
