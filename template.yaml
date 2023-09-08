@@ -43,11 +43,13 @@ Resources:
         Type: REGIONAL # EDGE | REGIONAL | PRIVATE
       Domain:
         DomainName: api-test.tecotec.co.jp
-        CertificateArn: arn:aws:acm:us-east-1:965163745124:certificate/c2865208-a300-4301-b522-ed5af82a75f7
+        CertificateArn: arn:aws:acm:ap-northeast-1:965163745124:certificate/ec831bea-cd35-4bc5-a1c9-7ab96219854c
         SecurityPolicy: TLS_1_2
-        EndpointConfiguration: EDGE # REGIONAL | EDGE
+        EndpointConfiguration: REGIONAL # REGIONAL | EDGE
         Route53:
           HostedZoneId: Z018056610BK6GVXLL29V
+        BasePath: # List of stage name
+          - v1
       Auth: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiauth.html
         ResourcePolicy:
           IpRangeWhitelist:
