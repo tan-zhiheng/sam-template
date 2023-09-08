@@ -22,16 +22,30 @@ Resources:
         - arm64 # x86_64 | arm64
       Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
       Events:
-        ScheduleEvent:
-          Type: ScheduleV2 # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedulev2.html
+        ApiEvent:
+          Type: Api
           Properties:
-            ## at expression - at(yyyy-mm-ddThh:mm:ss)
-            ## rate expression - rate(value unit) unit could be <minute | minutes | hour | hours | day | days>  example: rate(1 minute)
-            ## cron expression - cron(fields) fields consists of six fields separated by white spaces <minutes hours day_of_month month day_of_week year>
-            ScheduleExpression: 'at(2023-09-08T12:40:00)'
-            ScheduleExpressionTimezone: 'Asia/Tokyo'
-            # The ARN of the IAM role that EventBridge Scheduler will use for the target when the schedule is invoked.
-            RoleArn: arn:aws:iam::#AWS_ACCOUNT_ID:role/EventSchedulerServiceRole
-            RetryPolicy:
-              MaximumRetryAttempts: 0 # 0 to disable
+            Path: /path
+            Method: get
+            RestApiId: !Ref API
+  API:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: test-api # A name for the API Gateway RestApi resource
+      # Domain:
+      #   DomainName: www.example.com
+      #   CertificateArn: arn-example
+      #   SecurityPolicy: TLS_1_2
+      #   EndpointConfiguration: REGIONAL # REGIONAL | EDGE
+      #   Route53:
+      #     HostedZoneId: Z1PA6795UKMFR9
+      #   BasePath:
+      #     - foo
+      #     - bar
+      Auth: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiauth.html
+        ResourcePolicy:
+          IpRangeWhitelist:
+            - 159.28.65.135
+      StageName: dev
+      AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
 

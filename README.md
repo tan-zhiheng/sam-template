@@ -1,1 +1,1 @@
-# Scheduler + Lambda
+# API Gateway + Lambda

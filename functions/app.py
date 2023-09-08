@@ -26,8 +26,8 @@ def generate_key_pair(key_size=2048):
 
 
 # aws lambda function handler
-
-
 def handler(event, context):
-    generate_key_pair()
-    return "success"
+    print(f"event: {event}")
+    print(f"context: {context}")
+    private_key_pem, public_key_pub = generate_key_pair()
+    return {"private_key_pem": private_key_pem, "public_key_pub": public_key_pub}
