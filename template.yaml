@@ -25,13 +25,14 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Path: /path
+            Path: /
             Method: get
             RestApiId: !Ref API
   API:
     Type: AWS::Serverless::Api
     Properties:
       Name: test-api # A name for the API Gateway RestApi resource
+      # DisableExecuteApiEndpoint: false # Specifies whether clients can invoke your API by using the default execute-api endpoint.
       # Domain:
       #   DomainName: www.example.com
       #   CertificateArn: arn-example
@@ -46,6 +47,6 @@ Resources:
         ResourcePolicy:
           IpRangeWhitelist:
             - 159.28.65.135
-      StageName: dev
+      StageName: v1
       AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
 
