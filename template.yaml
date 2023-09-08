@@ -12,7 +12,7 @@ Globals:
     MemorySize: 128
 
 Resources:
-  sshKeyGenerateFunction:
+  TestFunc:
     Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
       CodeUri: functions/
@@ -28,21 +28,24 @@ Resources:
             Path: /
             Method: get
             RestApiId: !Ref API
+  TestFuncLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${TestFunc}
+      RetentionInDays: 7
+
   API:
     Type: AWS::Serverless::Api
     Properties:
       Name: test-api # A name for the API Gateway RestApi resource
-      # DisableExecuteApiEndpoint: false # Specifies whether clients can invoke your API by using the default execute-api endpoint.
-      # Domain:
-      #   DomainName: www.example.com
-      #   CertificateArn: arn-example
-      #   SecurityPolicy: TLS_1_2
-      #   EndpointConfiguration: REGIONAL # REGIONAL | EDGE
-      #   Route53:
-      #     HostedZoneId: Z1PA6795UKMFR9
-      #   BasePath:
-      #     - foo
-      #     - bar
+      DisableExecuteApiEndpoint: true # Specifies whether clients can invoke your API by using the default execute-api endpoint.
+      Domain:
+        DomainName: api-test.tecotec.co.jp
+        CertificateArn: arn-examplearn:aws:acm:ap-northeast-1:965163745124:certificate/ec831bea-cd35-4bc5-a1c9-7ab96219854c
+        SecurityPolicy: TLS_1_2
+        EndpointConfiguration: REGIONAL # REGIONAL | EDGE
+        Route53:
+          HostedZoneId: Z018056610BK6GVXLL29V
       Auth: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiauth.html
         ResourcePolicy:
           IpRangeWhitelist:
