@@ -20,7 +20,7 @@ Resources:
     Properties:
       CodeUri: functions/
       Handler: app.handler
-      Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
       Events:
         ApiEvent:
           Type: Api
@@ -39,7 +39,7 @@ Resources:
     Properties:
       CodeUri: functions/
       Handler: appv2.handler
-      Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
       Events:
         ApiEvent:
           Type: Api
@@ -58,7 +58,7 @@ Resources:
     Properties:
       CodeUri: functions/
       Handler: appv2.handler
-      Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
       Events:
         ApiEvent:
           Type: Api
@@ -66,6 +66,11 @@ Resources:
             Path: /v2
             Method: post
             RestApiId: !Ref API
+
+  ApiGwAccountConfig:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn: arn:aws:iam::965163745124:role/APIGWtoCloudWatchLogs
 
   API:
     Type: AWS::Serverless::Api
@@ -92,7 +97,7 @@ Resources:
       AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
       AccessLogSetting:
         DestinationArn: !GetAtt APILogGroup.Arn
-        Format: '{"requestId":"$context.requestId","requestTime":"$context.requestTime","domainName":"$context.domainName","apiErrorMessage":"$context.error.message","httpMethod":"$context.httpMethod","identitySourceIp":"$context.identity.sourceIp", "resourceId":"$context.resourceId","resourcePath":"$context.resourcePath","wafResponseCode":"$context.wafResponseCode"}'
+        Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLatency":$context.responseLatency}'
   APILogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
