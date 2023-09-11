@@ -41,31 +41,23 @@ Resources:
       Handler: appv2.handler
       Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
       Events:
-        ApiEvent:
+        ApiGetEvent:
           Type: Api
           Properties:
             Path: /v2
             Method: get
+            RestApiId: !Ref API
+        ApiPostEvent:
+          Type: Api
+          Properties:
+            Path: /v2
+            Method: post
             RestApiId: !Ref API
   V2FuncLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/lambda/${V2Func}
       RetentionInDays: 7
-
-  V2PostFunc:
-    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
-    Properties:
-      CodeUri: functions/
-      Handler: appv2.handler
-      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Path: /v2
-            Method: post
-            RestApiId: !Ref API
 
   ApiGwAccountConfig:
     Type: AWS::ApiGateway::Account
@@ -97,9 +89,16 @@ Resources:
       AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
       AccessLogSetting:
         DestinationArn: !GetAtt APILogGroup.Arn
-        Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLatency":$context.responseLatency}'
+        Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","sourceIp":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLength":$context.responseLength,"responseLatency":$context.responseLatency}'
   APILogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: /aws/apigateway/api-test.tecotec.co.jp
       RetentionInDays: 7
+  # APILogInsights:
+  #   Type: AWS::Logs::QueryDefinition
+  #   Properties:
+  #     LogGroupNames:
+  #       - !Sub ${APILogGroup}
+  #     Name: testquery
+  #     QueryString:
