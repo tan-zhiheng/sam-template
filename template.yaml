@@ -43,7 +43,7 @@ Resources:
         Type: REGIONAL # EDGE | REGIONAL | PRIVATE
       Domain:
         DomainName: api-test.tecotec.co.jp
-        CertificateArn: arn:aws:acm:ap-northeast-1:965163745124:certificate/ec831bea-cd35-4bc5-a1c9-7ab96219854c
+        CertificateArn: arn:aws:acm:ap-northeast-1:965163745124:certificate/4b3a1be2-26c0-4831-8e80-a338d4ffa74e
         SecurityPolicy: TLS_1_2
         EndpointConfiguration: REGIONAL # REGIONAL | EDGE
         Route53:
