@@ -8,8 +8,11 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
+    Runtime: python3.10 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
     Timeout: 10
-    MemorySize: 128
+    MemorySize: 256
+    Architectures:
+      - arm64 # x86_64 | arm64
 
 Resources:
   TestFunc:
@@ -17,9 +20,6 @@ Resources:
     Properties:
       CodeUri: functions/
       Handler: app.handler
-      Runtime: python3.10 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-      Architectures:
-        - arm64 # x86_64 | arm64
       Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
       Events:
         ApiEvent:
@@ -34,10 +34,44 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${TestFunc}
       RetentionInDays: 7
 
+  V2Func:
+    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      CodeUri: functions/
+      Handler: appv2.handler
+      Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /v2
+            Method: get
+            RestApiId: !Ref API
+  V2FuncLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${V2Func}
+      RetentionInDays: 7
+
+  V2PostFunc:
+    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      CodeUri: functions/
+      Handler: appv2.handler
+      Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /v2
+            Method: post
+            RestApiId: !Ref API
+
   API:
     Type: AWS::Serverless::Api
     Properties:
       Name: test-api # A name for the API Gateway RestApi resource
+      OpenApiVersion: '3.0.1' # prevent auto create Stage
       DisableExecuteApiEndpoint: true # Specifies whether clients can invoke your API by using the default execute-api endpoint.
       EndpointConfiguration:
         Type: REGIONAL # EDGE | REGIONAL | PRIVATE
@@ -48,7 +82,7 @@ Resources:
         EndpointConfiguration: REGIONAL # REGIONAL | EDGE
         Route53:
           HostedZoneId: Z018056610BK6GVXLL29V
-        BasePath: # List of stage name
+        BasePath:
           - /
       Auth: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiauth.html
         ResourcePolicy:
@@ -56,4 +90,11 @@ Resources:
             - 159.28.65.135
       StageName: v1
       AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
-
+      AccessLogSetting:
+        DestinationArn: !Ref APILogGroup
+        Format: '{"requestId":"$context.requestId","requestTime":"$context.requestTime","domainName":"$context.domainName","apiErrorMessage":"$context.error.message","httpMethod":"$context.httpMethod","identitySourceIp":"$context.identity.sourceIp", "resourceId":"$context.resourceId","resourcePath":"$context.resourcePath","wafResponseCode":"$context.wafResponseCode"}'
+  APILogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/apigateway/${API}
+      RetentionInDays: 7
