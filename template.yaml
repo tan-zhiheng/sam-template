@@ -91,7 +91,7 @@ Resources:
       StageName: v1
       AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
       AccessLogSetting:
-        DestinationArn: !Ref APILogGroup
+        DestinationArn: !GetAtt APILogGroup.Arn
         Format: '{"requestId":"$context.requestId","requestTime":"$context.requestTime","domainName":"$context.domainName","apiErrorMessage":"$context.error.message","httpMethod":"$context.httpMethod","identitySourceIp":"$context.identity.sourceIp", "resourceId":"$context.resourceId","resourcePath":"$context.resourcePath","wafResponseCode":"$context.wafResponseCode"}'
   APILogGroup:
     Type: AWS::Logs::LogGroup
