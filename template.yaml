@@ -96,5 +96,5 @@ Resources:
   APILogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub /aws/apigateway/${API}
+      LogGroupName: /aws/apigateway/api-test.tecotec.co.jp
       RetentionInDays: 7
