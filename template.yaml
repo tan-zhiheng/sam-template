@@ -49,7 +49,7 @@ Resources:
         Route53:
           HostedZoneId: Z018056610BK6GVXLL29V
         BasePath: # List of stage name
-          - v1
+          - /
       Auth: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiauth.html
         ResourcePolicy:
           IpRangeWhitelist:
