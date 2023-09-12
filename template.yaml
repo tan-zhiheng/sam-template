@@ -6,24 +6,27 @@ Description: >
   Sample SAM Template for sam-test
 
 Parameters:
+  Stage:
+    Type: String
+    Default: dev
   AppDomain:
     Type: String
     Default: api-test.tecotec.co.jp
   AppDomainCertificateArn:
     Type: String
     Default: arn:aws:acm:ap-northeast-1:965163745124:certificate/4b3a1be2-26c0-4831-8e80-a338d4ffa74e
-  APIGWtoCloudWatchRoleArn:
-    Type: String
-    Default: arn:aws:iam::965163745124:role/APIGWtoCloudWatchLogs
   Route53ID:
     Type: AWS::Route53::HostedZone::Id
     Default: Z018056610BK6GVXLL29V
+  WAFArn:
+    Type: String
+    Default: arn:aws:wafv2:ap-northeast-1:965163745124:regional/webacl/test/83d7543d-725f-4b60-8ba1-ee95105be96b
 
 Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
   Function:
     Runtime: python3.10 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
     Timeout: 10
-    MemorySize: 256
+    MemorySize: 128
     Architectures:
       - arm64 # x86_64 | arm64
 
@@ -72,10 +75,36 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${V2Func}
       RetentionInDays: 7
 
+  VPCFunc:
+    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      CodeUri: functions/
+      Handler: appvpc.handler
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
+      Events:
+        ApiGetEvent:
+          Type: Api
+          Properties:
+            Path: /ip
+            Method: get
+            RestApiId: !Ref API
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-0f8969de0116a5cd0
+        SubnetIds:
+          - subnet-0d57575d8609fbdfb
+          - subnet-07a24e72b6c10c9fb
+          - subnet-093a9f1b37f2e907e
+  VPCLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${VPCFunc}
+      RetentionInDays: 7
+
   ApiGwAccountConfig:
     Type: AWS::ApiGateway::Account
     Properties:
-      CloudWatchRoleArn: !Ref APIGWtoCloudWatchRoleArn
+      CloudWatchRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/APIGWtoCloudWatchLogs
 
   API:
     Type: AWS::Serverless::Api
@@ -94,17 +123,21 @@ Resources:
           HostedZoneId: !Ref Route53ID
         BasePath:
           - /
-      Auth: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiauth.html
-        ResourcePolicy:
-          IpRangeWhitelist:
-            - 159.28.65.135
-      StageName: v1
+      StageName: !Ref Stage
       AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
       AccessLogSetting:
         DestinationArn: !GetAtt APILogGroup.Arn
         Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","sourceIp":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLength":$context.responseLength,"responseLatency":$context.responseLatency}'
+      Cors:
+        AllowOrigin: !Ref AppDomain
   APILogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/apigateway/${AppDomain}
       RetentionInDays: 7
+
+  WAFAssociation:
+    Type: AWS::WAFv2::WebACLAssociation
+    Properties:
+      ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/${Stage}
+      WebACLArn: !Ref WAFArn
