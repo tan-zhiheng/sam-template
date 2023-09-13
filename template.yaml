@@ -136,6 +136,7 @@ Resources:
 
   WAFAssociation:
     Type: AWS::WAFv2::WebACLAssociation
+    DependsOn: APIStage
     Properties:
       ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/${Stage}
       WebACLArn: !Ref WAFArn
