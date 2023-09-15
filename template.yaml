@@ -34,6 +34,9 @@ Resources:
   TestFunc:
     Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
+      FunctionName: TestFunc
+      Description: SAM test function
+      AutoPublishAlias: !Ref Stage
       CodeUri: functions/
       Handler: app.handler
       Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
@@ -44,61 +47,16 @@ Resources:
             Path: /
             Method: get
             RestApiId: !Ref API
+      # VpcConfig:
+      #   SecurityGroupIds:
+      #     - <sg-id>
+      #   SubnetIds:
+      #     - <subnet-id1>
+      #     - <subnet-id2>
   TestFuncLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/lambda/${TestFunc}
-      RetentionInDays: 7
-
-  V2Func:
-    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
-    Properties:
-      CodeUri: functions/
-      Handler: appv2.handler
-      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
-      Events:
-        ApiGetEvent:
-          Type: Api
-          Properties:
-            Path: /v2
-            Method: get
-            RestApiId: !Ref API
-        ApiPostEvent:
-          Type: Api
-          Properties:
-            Path: /v2
-            Method: post
-            RestApiId: !Ref API
-  V2FuncLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/lambda/${V2Func}
-      RetentionInDays: 7
-
-  VPCFunc:
-    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
-    Properties:
-      CodeUri: functions/
-      Handler: appvpc.handler
-      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
-      Events:
-        ApiGetEvent:
-          Type: Api
-          Properties:
-            Path: /ip
-            Method: get
-            RestApiId: !Ref API
-      VpcConfig:
-        SecurityGroupIds:
-          - sg-0f8969de0116a5cd0
-        SubnetIds:
-          - subnet-0d57575d8609fbdfb
-          - subnet-07a24e72b6c10c9fb
-          - subnet-093a9f1b37f2e907e
-  VPCLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/lambda/${VPCFunc}
       RetentionInDays: 7
 
   ApiGwAccountConfig:
@@ -134,9 +92,9 @@ Resources:
       LogGroupName: !Sub /aws/apigateway/${AppDomain}
       RetentionInDays: 7
 
-  WAFAssociation:
-    Type: AWS::WAFv2::WebACLAssociation
-    DependsOn: APIStage
-    Properties:
-      ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/${Stage}
-      WebACLArn: !Ref WAFArn
+  # WAFAssociation:
+  #   Type: AWS::WAFv2::WebACLAssociation
+  #   DependsOn: APIStage # More info https://docs.aws.amazon.com/ja_jp/serverless-application-model/latest/developerguide/sam-specification-generated-resources-api.html
+  #   Properties:
+  #     ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/${Stage}
+  #     WebACLArn: !Ref WAFArn
