@@ -47,12 +47,12 @@ Resources:
             Path: /
             Method: get
             RestApiId: !Ref API
-      VpcConfig:
-        SecurityGroupIds:
-          - sg-0f8969de0116a5cd0
-        SubnetIds:
-          - subnet-0d57575d8609fbdfb
-          - subnet-07a24e72b6c10c9fb
+      # VpcConfig:
+      #   SecurityGroupIds:
+      #     - sg-0f8969de0116a5cd0
+      #   SubnetIds:
+      #     - subnet-0d57575d8609fbdfb
+      #     - subnet-07a24e72b6c10c9fb
   TestFuncLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
