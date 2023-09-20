@@ -47,12 +47,12 @@ Resources:
             Path: /
             Method: get
             RestApiId: !Ref API
-      # VpcConfig:
-      #   SecurityGroupIds:
-      #     - sg-0f8969de0116a5cd0
-      #   SubnetIds:
-      #     - subnet-0d57575d8609fbdfb
-      #     - subnet-07a24e72b6c10c9fb
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-0f8969de0116a5cd0
+        SubnetIds:
+          - subnet-0d57575d8609fbdfb
+          - subnet-07a24e72b6c10c9fb
   TestFuncLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -86,6 +86,18 @@ Resources:
       AccessLogSetting:
         DestinationArn: !GetAtt APILogGroup.Arn
         Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","sourceIp":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLength":$context.responseLength,"responseLatency":$context.responseLatency}'
+      Auth:
+        ApiKeyRequired: true
+        UsagePlan: # More info https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiusageplan.html
+          UsagePlanName: Test
+          Description: Usage plan for this API
+          CreateUsagePlan: PER_API # Valid values: PER_API, SHARED, and NONE .
+          Quota:
+            Limit: 500
+            Period: MONTH
+          Throttle:
+            BurstLimit: 100
+            RateLimit: 50
   APILogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
