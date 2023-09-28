@@ -21,6 +21,9 @@ Parameters:
   WAFArn:
     Type: String
     Default: arn:aws:wafv2:ap-northeast-1:965163745124:regional/webacl/test/83d7543d-725f-4b60-8ba1-ee95105be96b
+  LogRetention:
+    Type: Number
+    Default: 7
 
 Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
   Function:
@@ -57,7 +60,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/lambda/${TestFunc}
-      RetentionInDays: 7
+      RetentionInDays: !Ref LogRetention
 
   ApiGwAccountConfig:
     Type: AWS::ApiGateway::Account
