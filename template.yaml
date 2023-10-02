@@ -44,8 +44,8 @@ Resources:
       Handler: app.handler
       Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
       # ReservedConcurrentExecutions: 2
-      ProvisionedConcurrencyConfig:
-        ProvisionedConcurrentExecutions: 1
+      # ProvisionedConcurrencyConfig:
+      #   ProvisionedConcurrentExecutions: 1
       Events:
         ApiEvent:
           Type: Api
