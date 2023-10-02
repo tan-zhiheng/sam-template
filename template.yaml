@@ -34,6 +34,14 @@ Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/l
       - arm64 # x86_64 | arm64
 
 Resources:
+  DepLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: python-layer
+      Description: Python Layer
+      ContentUri: layers/
+      CompatibleRuntimes:
+        - python3.11
   TestFunc:
     Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
@@ -43,6 +51,11 @@ Resources:
       CodeUri: functions/
       Handler: app.handler
       Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
+      # ReservedConcurrentExecutions: 2
+      ProvisionedConcurrencyConfig:
+        ProvisionedConcurrentExecutions: 1
+      Layers:
+        - !Ref DepLayer
       Events:
         ApiEvent:
           Type: Api
