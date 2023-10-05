@@ -1,5 +1,5 @@
-import pprint
+import json
 
 
 def handler(event, context):
-    pprint.pprint(event)
+    return json.dumps(event)

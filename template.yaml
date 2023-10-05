@@ -12,7 +12,7 @@ Globals:
     MemorySize: 128
 
 Resources:
-  testFunction:
+  TestFunction:
     Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
       CodeUri: functions/
@@ -31,3 +31,8 @@ Resources:
             ScalingConfig:
               MaximumConcurrency: 10
             MaximumBatchingWindowInSeconds: 10
+  TestFuncLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${TestFunction}
+      RetentionInDays: 7
