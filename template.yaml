@@ -26,10 +26,10 @@ Resources:
           Type: SQS
           Properties:
             Queue: arn:aws:sqs:ap-northeast-1:965163745124:testQ
-            BatchSize: 10
+            BatchSize: 2
             Enabled: true
             ScalingConfig:
-              MaximumConcurrency: 10
+              MaximumConcurrency: 1
             MaximumBatchingWindowInSeconds: 10
   TestFuncLogGroup:
     Type: AWS::Logs::LogGroup
