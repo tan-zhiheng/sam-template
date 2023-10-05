@@ -68,6 +68,12 @@ Resources:
       AccessLogSetting:
         DestinationArn: !GetAtt APILogGroup.Arn
         Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","sourceIp":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLength":$context.responseLength,"responseLatency":$context.responseLatency,"apiGatewayErrorMessage":"$context.error.message"}'
+      Auth:
+        ApiKeyRequired: true
+        UsagePlan: # More info https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiusageplan.html
+          UsagePlanName: ForDev
+          Description: Usage plan for this API
+          CreateUsagePlan: PER_API # Valid values: PER_API, SHARED, and NONE .
   APILogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
