@@ -12,26 +12,22 @@ Globals:
     MemorySize: 128
 
 Resources:
-  sshKeyGenerateFunction:
+  testFunction:
     Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
       CodeUri: functions/
       Handler: app.handler
-      Runtime: python3.10 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+      Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
       Architectures:
         - arm64 # x86_64 | arm64
       Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
       Events:
-        ScheduleEvent:
-          Type: ScheduleV2 # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedulev2.html
+        SQSEvent:
+          Type: SQS
           Properties:
-            ## at expression - at(yyyy-mm-ddThh:mm:ss)
-            ## rate expression - rate(value unit) unit could be <minute | minutes | hour | hours | day | days>  example: rate(1 minute)
-            ## cron expression - cron(fields) fields consists of six fields separated by white spaces <minutes hours day_of_month month day_of_week year>
-            ScheduleExpression: 'at(2023-09-08T12:40:00)'
-            ScheduleExpressionTimezone: 'Asia/Tokyo'
-            # The ARN of the IAM role that EventBridge Scheduler will use for the target when the schedule is invoked.
-            RoleArn: arn:aws:iam::#AWS_ACCOUNT_ID:role/EventSchedulerServiceRole
-            RetryPolicy:
-              MaximumRetryAttempts: 0 # 0 to disable
-
+            Queue: arn:aws:sqs:ap-northeast-1:965163745124:testQ
+            BatchSize: 10
+            Enabled: true
+            ScalingConfig:
+              MaximumConcurrency: 10
+            MaximumBatchingWindowInSeconds: 10
