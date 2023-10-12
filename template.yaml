@@ -1,11 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Sample SAM Template for sam-test
 Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
   Function:
     Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-    Timeout: 10
-    MemorySize: 128
     Architectures:
       - arm64 # x86_64 | arm64
 
@@ -13,28 +10,27 @@ Resources:
   Func0:
     Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
-      FunctionName: Func1
+      FunctionName: TestFunc1
       Description: SAM test function
       AutoPublishAlias: dev
       CodeUri: functions/
-      Handler: app.handler
-      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda_test
-      ReservedConcurrentExecutions: 2
-      ProvisionedConcurrencyConfig:
-        ProvisionedConcurrentExecutions: 1
+      Handler: app1.handler
+      Role: arn:aws:iam::965163745124:role/lambda_test
+      Timeout: 10
+      MemorySize: 128
       Events:
-        ApiEvent:
+        ApiEvent0:
           Type: Api
           Properties:
             Path: /
             Method: get
             RestApiId: !Ref API
-      VpcConfig:
-        SecurityGroupIds:
-          - sg-0f8969de0116a5cd0
-        SubnetIds:
-          - subnet-0d57575d8609fbdfb
-          - subnet-07a24e72b6c10c9fb
+        ApiEvent1:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+            RestApiId: !Ref API
   Func0LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -68,21 +64,15 @@ Resources:
       AccessLogSetting:
         DestinationArn: !GetAtt APILogGroup.Arn
         Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","sourceIp":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLength":$context.responseLength,"responseLatency":$context.responseLatency,"apiGatewayErrorMessage":"$context.error.message"}'
-      Auth:
-        ApiKeyRequired: true
-        UsagePlan: # More info https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiusageplan.html
-          UsagePlanName: ForDev
-          Description: Usage plan for this API
-          CreateUsagePlan: PER_API # Valid values: PER_API, SHARED, and NONE .
   APILogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: /aws/apigateway/api-test.tecotec.co.jp
       RetentionInDays: 7
 
-  # WAFAssociation:
-  #   Type: AWS::WAFv2::WebACLAssociation
-  #   DependsOn: APIStage # More info https://docs.aws.amazon.com/ja_jp/serverless-application-model/latest/developerguide/sam-specification-generated-resources-api.html
-  #   Properties:
-  #     ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/dev
-  #     WebACLArn: arn:aws:wafv2:ap-northeast-1:965163745124:regional/webacl/test/83d7543d-725f-4b60-8ba1-ee95105be96b
+  WAFAssociation:
+    Type: AWS::WAFv2::WebACLAssociation
+    DependsOn: APIStage # More info https://docs.aws.amazon.com/ja_jp/serverless-application-model/latest/developerguide/sam-specification-generated-resources-api.html
+    Properties:
+      ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/dev
+      WebACLArn: arn:aws:wafv2:ap-northeast-1:965163745124:regional/webacl/test-waf/efb4e559-da29-4b95-b0d7-6c24b3c2fe6f
