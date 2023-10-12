@@ -8,5 +8,5 @@ def handler(event, context):
 
     return {
         "statusCode": 200,
-        "body": json.dumps({"event": event, "context": context}),
+        "body": json.dumps({"path_parameter": event["pathParameters"]}),
     }
