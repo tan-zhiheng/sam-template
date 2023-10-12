@@ -14,7 +14,7 @@ Resources:
       Description: SAM test function
       AutoPublishAlias: dev
       CodeUri: functions/
-      Handler: app1.handler
+      Handler: app2.handler
       Role: arn:aws:iam::965163745124:role/lambda_test
       Timeout: 10
       MemorySize: 128
