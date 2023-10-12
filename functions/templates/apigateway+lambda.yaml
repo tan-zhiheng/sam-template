@@ -26,9 +26,9 @@ Resources:
       {% if func.reservedConcurrency > 0 %}
       ReservedConcurrentExecutions: {{func.reservedConcurrency}}
       {% endif %}
-      {% if func.ProvisionedConcurrency > 0 %}
+      {% if func.provisionedConcurrency > 0 %}
       ProvisionedConcurrencyConfig:
-        ProvisionedConcurrentExecutions: {{func.ProvisionedConcurrency}}
+        ProvisionedConcurrentExecutions: {{func.provisionedConcurrency}}
       {% endif %}
       Events:
         {% for route in func.apiRoutes %}
