@@ -3,9 +3,10 @@ import json
 
 
 def handler(event, context):
-    url = "https://fakestoreapi.com/products"
-    res = requests.get(url)
+    # url = "https://fakestoreapi.com/products"
+    # res = requests.get(url)
+
     return {
-        "statusCode": res.status_code,
-        "body": json.dumps(res.json()),
+        "statusCode": 200,
+        "body": json.dumps({"event": event, "context": context}),
     }
