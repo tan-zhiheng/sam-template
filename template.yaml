@@ -15,7 +15,7 @@ Resources:
       AutoPublishAlias: dev
       AutoPublishAliasAllProperties: true
       CodeUri: functions/
-      Handler: app2.handler
+      Handler: app1.handler
       Role: arn:aws:iam::965163745124:role/lambda_test
       Timeout: 10
       MemorySize: 128
