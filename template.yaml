@@ -23,12 +23,6 @@ Resources:
         ApiEvent0:
           Type: Api
           Properties:
-            Path: /{id}
-            Method: get
-            RestApiId: !Ref API
-        ApiEvent1:
-          Type: Api
-          Properties:
             Path: /
             Method: post
             RestApiId: !Ref API

@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+{% if global.appDescription %}
+Description: {{global.appDescription}}
+{% endif %}
+Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+  Function:
+    Runtime: {{global.runtime}} # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+    Architectures:
+      - {{global.architecture}} # x86_64 | arm64
+
+Resources:
+  {% for func in functions %}
+  Func{{loop.index0}}:
+    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      FunctionName: {{func.name}}
+      Description: {{func.description}}
+      AutoPublishAlias: {{global.stage}}
+      AutoPublishAliasAllProperties: true
+      CodeUri: {{func.codePath}}
+      Handler: {{func.handler}}
+      Role: {{global.functionExcutionRoleArn}}
+      Timeout: {{func.timeout}}
+      MemorySize: {{func.memorySize}}
+      {% if func.reservedConcurrency > 0 %}
+      ReservedConcurrentExecutions: {{func.reservedConcurrency}}
+      {% endif %}
+      {% if func.ProvisionedConcurrency > 0 %}
+      ProvisionedConcurrencyConfig:
+        ProvisionedConcurrentExecutions: {{func.ProvisionedConcurrency}}
+      {% endif %}
+      Events:
+        {% for route in func.apiRoutes %}
+        ApiEvent{{loop.index0}}:
+          Type: Api
+          Properties:
+            Path: {{route.path}}
+            Method: {{route.method.lower()}}
+            RestApiId: !Ref API
+        {% endfor %}
+      {% if func.vpc.sgIds or func.vpc.subnetIds %}
+      VpcConfig:
+        SecurityGroupIds:
+        {% for sgId in func.vpc.sgIds %}
+          - {{sgId}}
+        {% endfor %}
+        SubnetIds:
+        {% for subnetId in func.vpc.subnetIds %}
+          - {{subnetId}}
+        {% endfor %}
+      {% endif %}
+  Func{{loop.index0}}LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${Func{{loop.index0}}}
+      RetentionInDays: {{global.logRetention}}
+  {% endfor %}
+
+  ApiGwAccountConfig:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/APIGWtoCloudWatchLogs
+
+  API:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: {{global.apiGatewayName}} # A name for the API Gateway RestApi resource
+      OpenApiVersion: '3.0.1' # prevent auto create Stage
+      DisableExecuteApiEndpoint: true # Specifies whether clients can invoke your API by using the default execute-api endpoint.
+      EndpointConfiguration:
+        Type: REGIONAL # EDGE | REGIONAL | PRIVATE
+      Domain:
+        DomainName: {{global.appDomain}}
+        CertificateArn: {{global.appDomainCertificateArn}}
+        SecurityPolicy: TLS_1_2
+        EndpointConfiguration: REGIONAL # REGIONAL | EDGE
+        Route53:
+          HostedZoneId: {{global.route53ID}}
+        BasePath:
+          - /
+      StageName: {{global.stage}}
+      AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
+      AccessLogSetting:
+        DestinationArn: !GetAtt APILogGroup.Arn
+        Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","sourceIp":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLength":$context.responseLength,"responseLatency":$context.responseLatency,"apiGatewayErrorMessage":"$context.error.message"}'
+      {% if global.apiKeyRequired %}
+      Auth:
+        ApiKeyRequired: true
+        UsagePlan: # More info https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiusageplan.html
+          UsagePlanName: For{{global.stage.capitalize()}}
+          Description: Usage plan for this API
+          CreateUsagePlan: PER_API # Valid values: PER_API, SHARED, and NONE .
+      {% endif %}
+  APILogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/apigateway/{{global.appDomain}}
+      RetentionInDays: {{global.logRetention}}
+
+  WAFAssociation:
+    Type: AWS::WAFv2::WebACLAssociation
+    DependsOn: API{{global.stage}}Stage # More info https://docs.aws.amazon.com/ja_jp/serverless-application-model/latest/developerguide/sam-specification-generated-resources-api.html
+    Properties:
+      ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/{{global.stage}}
+      WebACLArn: {{global.wafArn}}
