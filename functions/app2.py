@@ -12,7 +12,7 @@ def handler(event, context):
     )
 
     template = env.get_template("apigateway+lambda.yaml")
-    result = template.render(json.loads(event.body))
+    result = template.render(json.loads(event["body"]))
     return {
         "statusCode": 200,
         "body": json.dumps({"template": result}),
