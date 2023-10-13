@@ -1,0 +1,34 @@
+{
+  "global": {
+    "apiGatewayName": "test-api",
+    "apiKeyRequired": false,
+    "runtime": "python3.11",
+    "architecture": "arm64",
+    "appDescription": "",
+    "stage": "dev",
+    "appDomain": "api-test.tecotec.co.jp",
+    "appDomainCertificateArn": "arn:aws:acm:ap-northeast-1:965163745124:certificate/4b3a1be2-26c0-4831-8e80-a338d4ffa74e",
+    "route53ID": "Z018056610BK6GVXLL29V",
+    "wafArn": "arn:aws:wafv2:ap-northeast-1:965163745124:regional/webacl/test-waf/efb4e559-da29-4b95-b0d7-6c24b3c2fe6f",
+    "logRetention": 7,
+    "functionExcutionRoleArn": "arn:aws:iam::965163745124:role/lambda_test",
+    "apiGwCloudWatchRoleArn": "arn:aws:iam::965163745124:role/APIGWtoCloudWatchLogs"
+  },
+  "functions": [
+    {
+      "name": "TestFunc1",
+      "description": "SAM test function",
+      "codePath": "functions/",
+      "handler": "app2.handler",
+      "apiRoutes": [{ "method": "POST", "path": "/" }],
+      "timeout": 10,
+      "memorySize": 128,
+      "reservedConcurrency": 0,
+      "provisionedConcurrency": 0,
+      "vpc": {
+        "sgIds": [],
+        "subnetIds": []
+      }
+    }
+  ]
+}

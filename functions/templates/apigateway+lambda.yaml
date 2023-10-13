@@ -60,7 +60,7 @@ Resources:
   ApiGwAccountConfig:
     Type: AWS::ApiGateway::Account
     Properties:
-      CloudWatchRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/APIGWtoCloudWatchLogs
+      CloudWatchRoleArn: {{global.apiGwCloudWatchRoleArn}}
 
   API:
     Type: AWS::Serverless::Api
@@ -92,6 +92,10 @@ Resources:
           Description: Usage plan for this API
           CreateUsagePlan: PER_API # Valid values: PER_API, SHARED, and NONE .
       {% endif %}
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowMethods: "'*'"
   APILogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
