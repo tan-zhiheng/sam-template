@@ -32,6 +32,7 @@ Resources:
           Properties:
             Queue: arn:aws:sqs:ap-northeast-1:965163745124:testQ
             BatchSize: 2
+            MaximumBatchingWindowInSeconds: 1
             Enabled: true
   TestFuncLogGroup:
     Type: AWS::Logs::LogGroup
