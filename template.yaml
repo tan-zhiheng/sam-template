@@ -21,6 +21,9 @@ Resources:
       Architectures:
         - arm64 # x86_64 | arm64
       Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
+      ReservedConcurrentExecutions: 1
+      ProvisionedConcurrencyConfig:
+        ProvisionedConcurrentExecutions: 1
       Events:
         SQSEvent:
           Type: SQS
@@ -28,9 +31,6 @@ Resources:
             Queue: arn:aws:sqs:ap-northeast-1:965163745124:testQ
             BatchSize: 2
             Enabled: true
-            ScalingConfig:
-              MaximumConcurrency: 1
-            MaximumBatchingWindowInSeconds: 10
   TestFuncLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
