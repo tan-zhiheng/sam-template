@@ -8,8 +8,9 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 10
-    MemorySize: 128
+    Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+    Architectures:
+      - arm64 # x86_64 | arm64
 
 Resources:
   TestFunction:
@@ -19,13 +20,10 @@ Resources:
       AutoPublishAliasAllProperties: true
       CodeUri: functions/
       Handler: app.handler
-      Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-      Architectures:
-        - arm64 # x86_64 | arm64
       Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
+      Timeout: 10
+      MemorySize: 128
       ReservedConcurrentExecutions: 1
-      ProvisionedConcurrencyConfig:
-        ProvisionedConcurrentExecutions: 1
       Events:
         SQSEvent:
           Type: SQS
