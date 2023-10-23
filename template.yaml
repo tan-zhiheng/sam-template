@@ -60,7 +60,7 @@ Resources:
           - ls
         ResourceRequirements:
           - Type: MEMORY # MEMORY | VCPU
-            Value: '2048' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
+            Value: '3072' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
           - Type: VCPU # MEMORY | VCPU
             Value: '1' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
         Image: public.ecr.aws/aws-cli/aws-cli:latest
