@@ -60,9 +60,9 @@ Resources:
           - ls
         ResourceRequirements:
           - Type: MEMORY # MEMORY | VCPU
-            Value: '512' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
+            Value: '2048' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
           - Type: VCPU # MEMORY | VCPU
-            Value: '0.25' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
+            Value: '1' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
         Image: public.ecr.aws/aws-cli/aws-cli:latest
         ExecutionRoleArn: arn:aws:iam::965163745124:role/ECSTaskExecutionRoleTest # for ECS create container. More info https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html
         JobRoleArn: arn:aws:iam::965163745124:role/BatchJobRole # for containers. Like EC2 profile.
