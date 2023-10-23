@@ -6,34 +6,63 @@ Description: >
   Sample SAM Template for sam-test
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
-Globals:
-  Function:
-    Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-    Architectures:
-      - arm64 # x86_64 | arm64
+# Globals:
+#   Function:
+#     Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+#     Architectures:
+#       - arm64 # x86_64 | arm64
 
 Resources:
-  TestFunction:
-    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  ###
+  ###---Resources:JobQueue---
+  ###
+  ComputeEnv:
+    Type: 'AWS::Batch::ComputeEnvironment'
     Properties:
-      AutoPublishAlias: dev
-      AutoPublishAliasAllProperties: true
-      CodeUri: functions/
-      Handler: app.handler
-      Role: arn:aws:iam::#AWS_ACCOUNT_ID:role/lambda_test
-      Timeout: 10
-      MemorySize: 128
-      ReservedConcurrentExecutions: 1
-      Events:
-        SQSEvent:
-          Type: SQS
-          Properties:
-            Queue: arn:aws:sqs:ap-northeast-1:965163745124:testQ
-            BatchSize: 2
-            MaximumBatchingWindowInSeconds: 1
-            Enabled: true
-  TestFuncLogGroup:
-    Type: AWS::Logs::LogGroup
+      Type: MANAGED
+      ServiceRole: arn:aws:iam::965163745124:role/aws-service-role/batch.amazonaws.com/AWSServiceRoleForBatch
+      ComputeEnvironmentName: cnfTestComputeEnv
+      ComputeResources:
+        MaxvCpus: 256
+        SecurityGroupIds:
+          - sg-0f8969de0116a5cd0
+        Subnets:
+          - subnet-0d57575d8609fbdfb
+          - subnet-07a24e72b6c10c9fb
+          - subnet-093a9f1b37f2e907e
+        Type: FARGATE_SPOT # FARGATE | FARGATE_SPOT
+      State: ENABLED
+  ###
+  ###---Resources:JobQueue---
+  ###
+  JobQueue:
+    Type: AWS::Batch::JobQueue
     Properties:
-      LogGroupName: !Sub /aws/lambda/${TestFunction}
-      RetentionInDays: 7
+      JobQueueName: cnfTestQ
+      ComputeEnvironmentOrder:
+        - Order: 1
+          ComputeEnvironment: !Ref ComputeEnv
+      State: ENABLED
+      Priority: 1
+  ###
+  ###---Resources:JobDefinition---
+  ###
+  JobDefinition:
+    Type: AWS::Batch::JobDefinition
+    Properties:
+      Type: container
+      JobDefinitionName: cnfTest
+      Timeout:
+        AttemptDurationSeconds: 60
+      ContainerProperties:
+        Command: # `CMD` exec form
+          - s3
+          - ls
+        ResourceRequirements:
+          - Type: MEMORY # MEMORY | VCPU
+            Value: '2048' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
+          - Type: VCPU # MEMORY | VCPU
+            Value: '1' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
+        Image: public.ecr.aws/aws-cli/aws-cli:latest
+        ExecutionRoleArn: arn:aws:iam::965163745124:role/ECSTaskExecutionRoleTest # for ECS create container. More info https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html
+        JobRoleArn: arn:aws:iam::965163745124:role/BatchJobRole # for containers. Like EC2 profile.
