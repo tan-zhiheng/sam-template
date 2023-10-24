@@ -1,17 +1,5 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
-Description: >
-  sam-test
-
-  Sample SAM Template for sam-test
-
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
-# Globals:
-#   Function:
-#     Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-#     Architectures:
-#       - arm64 # x86_64 | arm64
-
+AWSTemplateFormatVersion: 2010-09-09
+Description: test
 Resources:
   ###
   ###---Resources:JobQueue---
@@ -51,6 +39,7 @@ Resources:
     Type: AWS::Batch::JobDefinition
     Properties:
       Type: container
+      PlatformCapabilities: FARGATE
       JobDefinitionName: cnfTest
       Timeout:
         AttemptDurationSeconds: 60
@@ -60,7 +49,7 @@ Resources:
           - ls
         ResourceRequirements:
           - Type: MEMORY # MEMORY | VCPU
-            Value: '3072' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
+            Value: '2048' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
           - Type: VCPU # MEMORY | VCPU
             Value: '1' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
         Image: public.ecr.aws/aws-cli/aws-cli:latest
