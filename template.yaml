@@ -39,7 +39,8 @@ Resources:
     Type: AWS::Batch::JobDefinition
     Properties:
       Type: container
-      PlatformCapabilities: FARGATE
+      PlatformCapabilities:
+        - FARGATE
       JobDefinitionName: cnfTest
       Timeout:
         AttemptDurationSeconds: 60
