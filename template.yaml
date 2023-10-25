@@ -56,6 +56,9 @@ Resources:
         Image: public.ecr.aws/aws-cli/aws-cli:latest
         ExecutionRoleArn: arn:aws:iam::965163745124:role/ECSTaskExecutionRoleTest # for ECS create container. More info https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html
         JobRoleArn: arn:aws:iam::965163745124:role/BatchJobRole # for containers. Like EC2 profile.
+        Environment:
+          - Name: role
+            Value: test
   ###
   ###---Resources:Scheduler---
   ###
@@ -69,8 +72,9 @@ Resources:
       ScheduleExpression: rate(1 minutes)
       ScheduleExpressionTimezone: 'Asia/Tokyo'
       FlexibleTimeWindow:
-        Mode: 'OFF'
-      State: DISABLED # DISABLED | ENABLED
+        Mode: 'FLEXIBLE'
+        MaximumWindowInMinutes: 1
+      State: ENABLED # DISABLED | ENABLED
       Target:
         Arn: arn:aws:scheduler:::aws-sdk:batch:submitJob
         Input: '{ "JobDefinition": "cnfTest", "JobName": "cnfTestJob", "JobQueue": "cnfTestQ" }'
