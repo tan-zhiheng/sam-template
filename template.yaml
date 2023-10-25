@@ -56,3 +56,22 @@ Resources:
         Image: public.ecr.aws/aws-cli/aws-cli:latest
         ExecutionRoleArn: arn:aws:iam::965163745124:role/ECSTaskExecutionRoleTest # for ECS create container. More info https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html
         JobRoleArn: arn:aws:iam::965163745124:role/BatchJobRole # for containers. Like EC2 profile.
+  ###
+  ###---Resources:Scheduler---
+  ###
+  Scheduler:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      Name: cnfTestSchedule
+      ## at expression - at(yyyy-MM-ddTHH:mm:ss)
+      ## rate expression - rate(value unit) unit could be <minute | minutes | hour | hours | day | days>  example: rate(1 minute)
+      ## cron expression - cron(fields) fields consists of six fields separated by white spaces <minutes hours day_of_month month day_of_week year>
+      ScheduleExpression: rate(1 minutes)
+      ScheduleExpressionTimezone: 'Asia/Tokyo'
+      FlexibleTimeWindow:
+        Mode: 'OFF'
+      State: ENABLED # DISABLED | ENABLED
+      Target:
+        Arn: arn:aws:scheduler:::aws-sdk:batch:submitJob
+        Input: '{ "JobDefinition": "cnfTest", "JobName": "cnfTestJob", "JobQueue": "cnfTestQ" }'
+        RoleArn: arn:aws:iam::965163745124:role/EventSchedulerServiceRole
