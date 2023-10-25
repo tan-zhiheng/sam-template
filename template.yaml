@@ -70,8 +70,10 @@ Resources:
       ScheduleExpressionTimezone: 'Asia/Tokyo'
       FlexibleTimeWindow:
         Mode: 'OFF'
-      State: ENABLED # DISABLED | ENABLED
+      State: DISABLED # DISABLED | ENABLED
       Target:
         Arn: arn:aws:scheduler:::aws-sdk:batch:submitJob
         Input: '{ "JobDefinition": "cnfTest", "JobName": "cnfTestJob", "JobQueue": "cnfTestQ" }'
         RoleArn: arn:aws:iam::965163745124:role/EventSchedulerServiceRole
+        RetryPolicy:
+          MaximumRetryAttempts: 0
