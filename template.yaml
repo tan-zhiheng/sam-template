@@ -8,7 +8,7 @@ Resources:
     Type: 'AWS::Batch::ComputeEnvironment'
     Properties:
       Type: MANAGED
-      ServiceRole: arn:aws:iam::965163745124:role/aws-service-role/batch.amazonaws.com/AWSServiceRoleForBatch
+      ServiceRole: arn:aws:iam::965163745124:role/BatchServiceRole
       ComputeEnvironmentName: cnfTestComputeEnv
       ComputeResources:
         MaxvCpus: 256
@@ -74,7 +74,7 @@ Resources:
       FlexibleTimeWindow:
         Mode: 'FLEXIBLE'
         MaximumWindowInMinutes: 1
-      State: ENABLED # DISABLED | ENABLED
+      State: DISABLED # DISABLED | ENABLED
       Target:
         Arn: arn:aws:scheduler:::aws-sdk:batch:submitJob
         Input: '{ "JobDefinition": "cnfTest", "JobName": "cnfTestJob", "JobQueue": "cnfTestQ" }'
