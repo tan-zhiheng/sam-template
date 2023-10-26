@@ -8,7 +8,6 @@ Resources:
     Type: 'AWS::Batch::ComputeEnvironment'
     Properties:
       Type: MANAGED
-      ServiceRole: arn:aws:iam::965163745124:role/BatchServiceRole
       ComputeEnvironmentName: cnfTestComputeEnv
       ComputeResources:
         MaxvCpus: 256
