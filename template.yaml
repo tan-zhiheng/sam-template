@@ -15,9 +15,9 @@ Resources:
         SecurityGroupIds:
           - sg-0f8969de0116a5cd0
         Subnets:
-          - subnet-0d57575d8609fbdfb
-          - subnet-07a24e72b6c10c9fb
-          - subnet-093a9f1b37f2e907e
+          - subnet-06791fa1073efdbe4
+          - subnet-0c926ced223f24f5f
+          - subnet-0b2c25856a07c7db9
         Type: FARGATE_SPOT # FARGATE | FARGATE_SPOT
       State: ENABLED
   ###
@@ -46,7 +46,7 @@ Resources:
         AttemptDurationSeconds: 60
       ContainerProperties:
         Command: # `CMD` exec form
-          - '-v'
+          - '-s'
           - 'https://ipinfo.io/'
         ResourceRequirements:
           - Type: MEMORY # MEMORY | VCPU
