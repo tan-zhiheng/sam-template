@@ -58,6 +58,17 @@ Resources:
         Environment:
           - Name: role
             Value: test
+        LogConfiguration:
+          LogDriver: awslogs
+          Options: { 'awslogs-group': '/aws/batch/job/cnfTest' }
+  ###
+  ###---Resources:LogGroup---
+  ###
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/batch/job/cnfTest
+      RetentionInDays: 7
   ###
   ###---Resources:Scheduler---
   ###
