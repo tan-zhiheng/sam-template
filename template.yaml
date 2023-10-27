@@ -1,4 +1,5 @@
-AWSTemplateFormatVersion: 2010-09-09
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
 Description: test
 Resources:
   ###
@@ -45,19 +46,21 @@ Resources:
         AttemptDurationSeconds: 60
       ContainerProperties:
         Command: # `CMD` exec form
-          - s3
-          - ls
+          - '-v'
+          - 'https://ipinfo.io/'
         ResourceRequirements:
           - Type: MEMORY # MEMORY | VCPU
             Value: '2048' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
           - Type: VCPU # MEMORY | VCPU
             Value: '1' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
-        Image: public.ecr.aws/aws-cli/aws-cli:latest
+        Image: curlimages/curl
         ExecutionRoleArn: arn:aws:iam::965163745124:role/ECSTaskExecutionRoleTest # for ECS create container. More info https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html
         JobRoleArn: arn:aws:iam::965163745124:role/BatchJobRole # for containers. Like EC2 profile.
         Environment:
           - Name: role
             Value: test
+        NetworkConfiguration:
+          AssignPublicIp: ENABLED # DISABLED | ENABLED
         LogConfiguration:
           LogDriver: awslogs
           Options: { 'awslogs-group': '/aws/batch/job/cnfTest' }
@@ -84,7 +87,7 @@ Resources:
       FlexibleTimeWindow:
         Mode: 'FLEXIBLE'
         MaximumWindowInMinutes: 1
-      State: DISABLED # DISABLED | ENABLED
+      State: ENABLED # DISABLED | ENABLED
       Target:
         Arn: arn:aws:scheduler:::aws-sdk:batch:submitJob
         Input: '{ "JobDefinition": "cnfTest", "JobName": "cnfTestJob", "JobQueue": "cnfTestQ" }'
