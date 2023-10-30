@@ -24,7 +24,7 @@ Resources:
         SQSEvent:
           Type: SQS
           Properties:
-            Queue:
+            Queue: arn:aws:sqs:ap-northeast-1:965163745124:testQ
             BatchSize: 5
             Enabled: true
   Func0LogGroup:
