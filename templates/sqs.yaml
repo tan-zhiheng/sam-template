@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Sample SAM Template for sam-test
+Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+  Function:
+    Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+    Architectures:
+      - arm64 # x86_64 | arm64
+
+Resources:
+  Func0:
+    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      FunctionName: Func1
+      Description: SAM test function
+      AutoPublishAlias: dev
+      AutoPublishAliasAllProperties: true
+      CodeUri: ../functions/
+      Handler: app.handler
+      Role: arn:aws:iam::965163745124:role/lambda_test
+      Timeout: 10
+      MemorySize: 128
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue:
+            BatchSize: 5
+            Enabled: true
+  Func0LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${Func0}
+      RetentionInDays: 7
