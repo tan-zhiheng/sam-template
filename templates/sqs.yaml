@@ -73,7 +73,7 @@ Resources:
         SQSEvent:
           Type: SQS
           Properties:
-            Queue: !Ref SQS0
+            Queue: !GetAtt SQS0.Arn
             BatchSize: 5
             Enabled: true
   Func0LogGroup:
