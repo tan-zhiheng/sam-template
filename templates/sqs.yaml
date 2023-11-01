@@ -8,6 +8,51 @@ Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/l
       - arm64 # x86_64 | arm64
 
 Resources:
+  SQS0:
+    Type: AWS::SQS::Queue
+    Properties:
+      DelaySeconds: 0 # 0 ~ 900 (15 minutes)
+      MaximumMessageSize: 262144 # default 256KB. 1,024 bytes (1 KiB) ~ 262,144 bytes (256 KiB)
+      MessageRetentionPeriod: 345600 # default 4days. 60 seconds (1 minute) ~ 1,209,600 seconds (14 days)
+      QueueName: Func1Q
+      ReceiveMessageWaitTimeSeconds: 0 # 0~20
+      RedriveAllowPolicy:
+        {
+          'Version': '2012-10-17',
+          'Id': '__default_policy_ID',
+          'Statement':
+            [
+              {
+                'Sid': '__owner_statement',
+                'Effect': 'Allow',
+                'Principal': { 'AWS': '${AWS::AccountId}' },
+                'Action': ['SQS:*'],
+                'Resource': !Sub 'arn:aws:sqs:ap-northeast-1:${AWS::AccountId}:Func1Q',
+              },
+              {
+                'Sid': '__sender_statement',
+                'Effect': 'Allow',
+                'Principal':
+                  { 'AWS': ['arn:aws:iam::965163745124:role/lambda_test'] },
+                'Action': ['SQS:SendMessage'],
+                'Resource': !Sub 'arn:aws:sqs:ap-northeast-1:${AWS::AccountId}:Func1Q',
+              },
+              {
+                'Sid': '__receiver_statement',
+                'Effect': 'Allow',
+                'Principal':
+                  { 'AWS': ['arn:aws:iam::965163745124:role/lambda_test'] },
+                'Action':
+                  [
+                    'SQS:ChangeMessageVisibility',
+                    'SQS:DeleteMessage',
+                    'SQS:ReceiveMessage',
+                  ],
+                'Resource': !Sub 'arn:aws:sqs:ap-northeast-1:${AWS::AccountId}:Func1Q',
+              },
+            ],
+        }
+      VisibilityTimeout: 30 # default 30 seconds. 0 to 43,200 seconds (12 hours)
   Func0:
     Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
@@ -17,7 +62,7 @@ Resources:
       AutoPublishAliasAllProperties: true
       CodeUri: ../functions/
       Handler: app.handler
-      Role: arn:aws:iam::965163745124:role/lambda_test
+      Role: !Ref SQS0
       Timeout: 10
       MemorySize: 128
       Events:
