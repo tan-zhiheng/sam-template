@@ -1,11 +1,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: test
 Resources:
   ###
   ###---Resources:JobQueue---
   ###
-  ComputeEnv:
+  ComputeEnv0:
     Type: 'AWS::Batch::ComputeEnvironment'
     Properties:
       Type: MANAGED
@@ -15,27 +14,27 @@ Resources:
         SecurityGroupIds:
           - sg-0f8969de0116a5cd0
         Subnets:
-          - subnet-06791fa1073efdbe4
-          - subnet-0c926ced223f24f5f
-          - subnet-0b2c25856a07c7db9
+          - subnet-0d57575d8609fbdfb
+          - subnet-07a24e72b6c10c9fb
+          - subnet-093a9f1b37f2e907e
         Type: FARGATE_SPOT # FARGATE | FARGATE_SPOT
       State: ENABLED
   ###
   ###---Resources:JobQueue---
   ###
-  JobQueue:
+  JobQueue0:
     Type: AWS::Batch::JobQueue
     Properties:
       JobQueueName: cnfTestQ
       ComputeEnvironmentOrder:
         - Order: 1
-          ComputeEnvironment: !Ref ComputeEnv
+          ComputeEnvironment: !Ref ComputeEnv0
       State: ENABLED
       Priority: 1
   ###
   ###---Resources:JobDefinition---
   ###
-  JobDefinition:
+  JobDefinition0:
     Type: AWS::Batch::JobDefinition
     Properties:
       Type: container
@@ -46,28 +45,28 @@ Resources:
         AttemptDurationSeconds: 60
       ContainerProperties:
         Command: # `CMD` exec form
-          - '-s'
-          - 'https://ipinfo.io/'
+          - s3
+          - ls
         ResourceRequirements:
           - Type: MEMORY # MEMORY | VCPU
             Value: '2048' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
           - Type: VCPU # MEMORY | VCPU
             Value: '1' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
-        Image: curlimages/curl
+        Image: public.ecr.aws/aws-cli/aws-cli:latest
         ExecutionRoleArn: arn:aws:iam::965163745124:role/ECSTaskExecutionRoleTest # for ECS create container. More info https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html
         JobRoleArn: arn:aws:iam::965163745124:role/BatchJobRole # for containers. Like EC2 profile.
         Environment:
           - Name: role
             Value: test
         NetworkConfiguration:
-          AssignPublicIp: ENABLED # DISABLED | ENABLED
+          AssignPublicIp: DISABLED # DISABLED | ENABLED
         LogConfiguration:
           LogDriver: awslogs
           Options: { 'awslogs-group': '/aws/batch/job/cnfTest' }
   ###
   ###---Resources:LogGroup---
   ###
-  LogGroup:
+  LogGroup0:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: /aws/batch/job/cnfTest
@@ -75,7 +74,7 @@ Resources:
   ###
   ###---Resources:Scheduler---
   ###
-  Scheduler:
+  Scheduler0:
     Type: AWS::Scheduler::Schedule
     Properties:
       Name: cnfTestSchedule
@@ -91,6 +90,97 @@ Resources:
       Target:
         Arn: arn:aws:scheduler:::aws-sdk:batch:submitJob
         Input: '{ "JobDefinition": "cnfTest", "JobName": "cnfTestJob", "JobQueue": "cnfTestQ" }'
+        RoleArn: arn:aws:iam::965163745124:role/EventSchedulerServiceRole
+        RetryPolicy:
+          MaximumRetryAttempts: 0
+  ###
+  ###---Resources:JobQueue---
+  ###
+  ComputeEnv1:
+    Type: 'AWS::Batch::ComputeEnvironment'
+    Properties:
+      Type: MANAGED
+      ComputeEnvironmentName: cnfTest11111111ComputeEnv
+      ComputeResources:
+        MaxvCpus: 256
+        SecurityGroupIds:
+          - sg-0f8969de0116a5cd0
+        Subnets:
+          - subnet-0d57575d8609fbdfb
+          - subnet-07a24e72b6c10c9fb
+          - subnet-093a9f1b37f2e907e
+        Type: FARGATE_SPOT # FARGATE | FARGATE_SPOT
+      State: ENABLED
+  ###
+  ###---Resources:JobQueue---
+  ###
+  JobQueue1:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      JobQueueName: cnfTest11111111Q
+      ComputeEnvironmentOrder:
+        - Order: 1
+          ComputeEnvironment: !Ref ComputeEnv1
+      State: ENABLED
+      Priority: 1
+  ###
+  ###---Resources:JobDefinition---
+  ###
+  JobDefinition1:
+    Type: AWS::Batch::JobDefinition
+    Properties:
+      Type: container
+      PlatformCapabilities:
+        - FARGATE
+      JobDefinitionName: cnfTest11111111
+      Timeout:
+        AttemptDurationSeconds: 60
+      ContainerProperties:
+        Command: # `CMD` exec form
+          - s3
+          - ls
+        ResourceRequirements:
+          - Type: MEMORY # MEMORY | VCPU
+            Value: '2048' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
+          - Type: VCPU # MEMORY | VCPU
+            Value: '1' # more info https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
+        Image: public.ecr.aws/aws-cli/aws-cli:latest
+        ExecutionRoleArn: arn:aws:iam::965163745124:role/ECSTaskExecutionRoleTest # for ECS create container. More info https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html
+        JobRoleArn: arn:aws:iam::965163745124:role/BatchJobRole # for containers. Like EC2 profile.
+        Environment:
+          - Name: role
+            Value: test
+        NetworkConfiguration:
+          AssignPublicIp: DISABLED # DISABLED | ENABLED
+        LogConfiguration:
+          LogDriver: awslogs
+          Options: { 'awslogs-group': '/aws/batch/job/cnfTest11111111' }
+  ###
+  ###---Resources:LogGroup---
+  ###
+  LogGroup1:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/batch/job/cnfTest11111111
+      RetentionInDays: 14
+  ###
+  ###---Resources:Scheduler---
+  ###
+  Scheduler1:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      Name: cnfTest11111111Schedule
+      ## at expression - at(yyyy-MM-ddTHH:mm:ss)
+      ## rate expression - rate(value unit) unit could be <minute | minutes | hour | hours | day | days>  example: rate(1 minute)
+      ## cron expression - cron(fields) fields consists of six fields separated by white spaces <minutes hours day_of_month month day_of_week year>
+      ScheduleExpression: rate(1 minutes)
+      ScheduleExpressionTimezone: 'Asia/Tokyo'
+      FlexibleTimeWindow:
+        Mode: 'OFF'
+      State: DISABLED # DISABLED | ENABLED
+      Target:
+        Arn: arn:aws:scheduler:::aws-sdk:batch:submitJob
+        Input: '{ "JobDefinition": "cnfTest11111111", "JobName": "cnfTest11111111Job", "JobQueue": "cnfTest11111111Q" }'
         RoleArn: arn:aws:iam::965163745124:role/EventSchedulerServiceRole
         RetryPolicy:
           MaximumRetryAttempts: 0

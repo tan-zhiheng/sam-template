@@ -5,7 +5,7 @@ Resources:
     Type: AWS::Serverless::Application
     Properties:
       Location: ./templates/batch.yaml
-  SQS:
-    Type: AWS::Serverless::Application
-    Properties:
-      Location: ./templates/sqs.yaml
+  # SQS:
+  #   Type: AWS::Serverless::Application
+  #   Properties:
+  #     Location: ./templates/sqs.yaml
