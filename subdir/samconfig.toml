@@ -4,7 +4,7 @@ version = 0.1
 
 [default]
 [default.global.parameters]
-stack_name = "sam-test2"
+stack_name = "sam-subdir-test2"
 
 [default.build.parameters]
 cached = true
