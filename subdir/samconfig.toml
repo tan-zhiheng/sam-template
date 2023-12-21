@@ -34,6 +34,9 @@ warm_containers = "EAGER"
 stack_name = "sam-subdir-dev"
 template = "dev/template.yaml"
 
+[dev.deploy.parameters]
+resolve_s3 = true
+
 [stg.global.parameters]
 stack_name = "sam-subdir-stg"
 template = "stg/template.yaml"
