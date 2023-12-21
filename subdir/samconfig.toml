@@ -3,8 +3,8 @@
 version = 0.1
 
 [default]
-[default.global.parameters]
-stack_name = "sam-subdir-test2"
+# [default.global.parameters]
+# stack_name = "sam-subdir-test2"
 
 [default.build.parameters]
 cached = true
@@ -29,3 +29,14 @@ warm_containers = "EAGER"
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
+
+
+[dev]
+[dev.global.parameters]
+stack_name = "sam-subdir-dev"
+template = "dev/template.yaml"
+
+[stg]
+[stg.global.parameters]
+stack_name = "sam-subdir-stg"
+template = "stg/template.yaml"

@@ -8,7 +8,7 @@ Resources:
     Type: 'AWS::Batch::ComputeEnvironment'
     Properties:
       Type: MANAGED
-      ComputeEnvironmentName: cnfTestComputeEnv
+      ComputeEnvironmentName: cnfStgComputeEnv
       ComputeResources:
         MaxvCpus: 256
         SecurityGroupIds:
@@ -25,7 +25,7 @@ Resources:
   JobQueue0:
     Type: AWS::Batch::JobQueue
     Properties:
-      JobQueueName: cnfTestQ
+      JobQueueName: cnfStgQ
       ComputeEnvironmentOrder:
         - Order: 1
           ComputeEnvironment: !Ref ComputeEnv0
@@ -40,7 +40,7 @@ Resources:
       Type: container
       PlatformCapabilities:
         - FARGATE
-      JobDefinitionName: cnfTest
+      JobDefinitionName: cnfStg
       Timeout:
         AttemptDurationSeconds: 60
       ContainerProperties:
@@ -62,14 +62,14 @@ Resources:
           AssignPublicIp: DISABLED # DISABLED | ENABLED
         LogConfiguration:
           LogDriver: awslogs
-          Options: { 'awslogs-group': '/aws/batch/job/cnfTest' }
+          Options: { 'awslogs-group': '/aws/batch/job/cnfStg' }
   ###
   ###---Resources:LogGroup---
   ###
   LogGroup0:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: /aws/batch/job/cnfTest
+      LogGroupName: /aws/batch/job/cnfStg
       RetentionInDays: 7
   ###
   ###---Resources:Scheduler---
@@ -77,7 +77,7 @@ Resources:
   Scheduler0:
     Type: AWS::Scheduler::Schedule
     Properties:
-      Name: cnfTestSchedule
+      Name: cnfStgSchedule
       ## at expression - at(yyyy-MM-ddTHH:mm:ss)
       ## rate expression - rate(value unit) unit could be <minute | minutes | hour | hours | day | days>  example: rate(1 minute)
       ## cron expression - cron(fields) fields consists of six fields separated by white spaces <minutes hours day_of_month month day_of_week year>
@@ -89,7 +89,7 @@ Resources:
       State: DISABLED # DISABLED | ENABLED
       Target:
         Arn: arn:aws:scheduler:::aws-sdk:batch:submitJob
-        Input: '{ "JobDefinition": "cnfTest", "JobName": "cnfTestJob", "JobQueue": "cnfTestQ" }'
+        Input: '{ "JobDefinition": "cnfStg", "JobName": "cnfStgJob", "JobQueue": "cnfStgQ" }'
         RoleArn: arn:aws:iam::965163745124:role/EventSchedulerServiceRole
         RetryPolicy:
           MaximumRetryAttempts: 0
@@ -100,7 +100,7 @@ Resources:
     Type: 'AWS::Batch::ComputeEnvironment'
     Properties:
       Type: MANAGED
-      ComputeEnvironmentName: cnfTest11111111ComputeEnv
+      ComputeEnvironmentName: cnfStg11111111ComputeEnv
       ComputeResources:
         MaxvCpus: 256
         SecurityGroupIds:
@@ -117,7 +117,7 @@ Resources:
   JobQueue1:
     Type: AWS::Batch::JobQueue
     Properties:
-      JobQueueName: cnfTest11111111Q
+      JobQueueName: cnfStg11111111Q
       ComputeEnvironmentOrder:
         - Order: 1
           ComputeEnvironment: !Ref ComputeEnv1
@@ -132,7 +132,7 @@ Resources:
       Type: container
       PlatformCapabilities:
         - FARGATE
-      JobDefinitionName: cnfTest11111111
+      JobDefinitionName: cnfStg11111111
       Timeout:
         AttemptDurationSeconds: 60
       ContainerProperties:
@@ -154,14 +154,14 @@ Resources:
           AssignPublicIp: DISABLED # DISABLED | ENABLED
         LogConfiguration:
           LogDriver: awslogs
-          Options: { 'awslogs-group': '/aws/batch/job/cnfTest11111111' }
+          Options: { 'awslogs-group': '/aws/batch/job/cnfStg11111111' }
   ###
   ###---Resources:LogGroup---
   ###
   LogGroup1:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: /aws/batch/job/cnfTest11111111
+      LogGroupName: /aws/batch/job/cnfStg11111111
       RetentionInDays: 14
   ###
   ###---Resources:Scheduler---
@@ -169,7 +169,7 @@ Resources:
   Scheduler1:
     Type: AWS::Scheduler::Schedule
     Properties:
-      Name: cnfTest11111111Schedule
+      Name: cnfStg11111111Schedule
       ## at expression - at(yyyy-MM-ddTHH:mm:ss)
       ## rate expression - rate(value unit) unit could be <minute | minutes | hour | hours | day | days>  example: rate(1 minute)
       ## cron expression - cron(fields) fields consists of six fields separated by white spaces <minutes hours day_of_month month day_of_week year>
@@ -180,7 +180,7 @@ Resources:
       State: DISABLED # DISABLED | ENABLED
       Target:
         Arn: arn:aws:scheduler:::aws-sdk:batch:submitJob
-        Input: '{ "JobDefinition": "cnfTest11111111", "JobName": "cnfTest11111111Job", "JobQueue": "cnfTest11111111Q" }'
+        Input: '{ "JobDefinition": "cnfStg11111111", "JobName": "cnfStg11111111Job", "JobQueue": "cnfStg11111111Q" }'
         RoleArn: arn:aws:iam::965163745124:role/EventSchedulerServiceRole
         RetryPolicy:
           MaximumRetryAttempts: 0

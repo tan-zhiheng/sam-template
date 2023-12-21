@@ -1,0 +1,11 @@
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  Batch:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./templates/batch.yaml
+  # SQS:
+  #   Type: AWS::Serverless::Application
+  #   Properties:
+  #     Location: ./templates/sqs.yaml

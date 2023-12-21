@@ -1,10 +1,10 @@
 version: 0.2
 
 phases:
-  # pre_build:
-  #   commands:
-  #     - cd subdir
+  pre_build:
+    commands:
+      - cd subdir
   build:
     commands:
-      - sam build
-      - sam deploy
+      - sam build --config-env $ENV
+      - sam deploy --config-env $ENV
