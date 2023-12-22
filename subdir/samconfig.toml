@@ -2,41 +2,61 @@
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
 version = 0.1
 
-[default]
-#[default.global.parameters]
-# stack_name = "sam-subdir-test2"
-
-[default.build.parameters]
-cached = true
-parallel = true
-
-[default.validate.parameters]
-lint = true
-
-[default.deploy.parameters]
-capabilities = "CAPABILITY_AUTO_EXPAND"
-confirm_changeset = false
-resolve_s3 = true
-
-[default.package.parameters]
-resolve_s3 = true
-
-[default.sync.parameters]
-watch = true
-
-[default.local_start_api.parameters]
-warm_containers = "EAGER"
-
-[default.local_start_lambda.parameters]
-warm_containers = "EAGER"
-
+[dev]
 [dev.global.parameters]
 stack_name = "sam-subdir-dev"
 template = "dev/template.yaml"
 
+[dev.build.parameters]
+cached = true
+parallel = true
+
+[dev.validate.parameters]
+lint = true
+
 [dev.deploy.parameters]
+capabilities = "CAPABILITY_AUTO_EXPAND"
+confirm_changeset = false
 resolve_s3 = true
 
+[dev.package.parameters]
+resolve_s3 = true
+
+[dev.sync.parameters]
+watch = true
+
+[dev.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[dev.local_start_lambda.parameters]
+warm_containers = "EAGER"
+
+
+[stg]
 [stg.global.parameters]
 stack_name = "sam-subdir-stg"
 template = "stg/template.yaml"
+
+[stg.build.parameters]
+cached = true
+parallel = true
+
+[stg.validate.parameters]
+lint = true
+
+[stg.deploy.parameters]
+capabilities = "CAPABILITY_AUTO_EXPAND"
+confirm_changeset = false
+resolve_s3 = true
+
+[stg.package.parameters]
+resolve_s3 = true
+
+[stg.sync.parameters]
+watch = true
+
+[stg.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[stg.local_start_lambda.parameters]
+warm_containers = "EAGER"
