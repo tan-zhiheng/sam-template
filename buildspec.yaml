@@ -1,11 +1,16 @@
-version: 0.2
-
+version: 0.1
 phases:
-  pre_build:
+  install:
     commands:
-      - AWS_ACCOUNT_ID=`echo ${CODEBUILD_BUILD_ARN} | awk -F ':' '{print $5}'`
-      - sed -i "s/#AWS_ACCOUNT_ID/${AWS_ACCOUNT_ID}/" template.yaml
-  build:
-    commands:
-      - sam build
-      - sam deploy
+      - sudo pip install --upgrade awscli
+      - aws --version
+      - sudo pip install chalice
+      - sudo pip install -r ${APP_NAME}/requirements.txt
+      - cd ${APP_NAME} && chalice package /tmp/packaged
+      - aws cloudformation package --template-file
+        /tmp/packaged/sam.json --s3-bucket ${APP_S3_BUCKET}
+        --output-template-file transformed.yaml
+artifacts:
+  type: zip
+  files:
+    - transformed.yaml
