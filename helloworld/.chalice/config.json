@@ -1,9 +1,9 @@
 {
   "version": "2.0",
   "app_name": "helloworld",
-  "stages": {
-    "dev": {
-      "api_gateway_stage": "api"
-    }
-  }
+  "api_gateway_stage": "api",
+  "autogen_policy": false,
+  "manage_iam_role": false,
+  "iam_role_arn": "arn:aws:iam::965163745124:role/LambdaExecutionRole",
+  "log_retention_in_days": 7
 }
