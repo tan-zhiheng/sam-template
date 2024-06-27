@@ -7,7 +7,7 @@ phases:
       - cd ${APP_NAME} && chalice package /tmp/packaged
       - aws cloudformation package --template-file
         /tmp/packaged/sam.json --s3-bucket ${APP_S3_BUCKET}
-        --output-template-file transformed.yaml
+        --output-template-file ../transformed.yaml
 artifacts:
   files:
     - transformed.yaml
