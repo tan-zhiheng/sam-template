@@ -22,6 +22,6 @@ def handle_sqs_message(event):
         app.log.debug("Received message with contents: %s", record.body)
 
 
-@app.route("/cities/{city}")
-def state_of_city(city):
-    return {"state": CITIES_TO_STATE[city]}
+# @app.route("/cities/{city}")
+# def state_of_city(city):
+#     return {"state": CITIES_TO_STATE[city]}
