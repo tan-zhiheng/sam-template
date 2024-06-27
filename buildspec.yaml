@@ -1,6 +1,8 @@
-version: 0.1
+version: 0.2
 phases:
   install:
+    runtime-versions:
+      python: 3.12
     commands:
       - pip install chalice
       - pip install -r ${APP_NAME}/requirements.txt
@@ -9,6 +11,5 @@ phases:
         /tmp/packaged/sam.json --s3-bucket ${APP_S3_BUCKET}
         --output-template-file transformed.yaml
 artifacts:
-  type: zip
   files:
     - transformed.yaml
