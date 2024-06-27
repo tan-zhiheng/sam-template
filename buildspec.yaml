@@ -1,8 +1,6 @@
 version: 0.2
 phases:
   install:
-    runtime-versions:
-      python: 3.12
     commands:
       - pip install chalice
       - pip install -r ${APP_NAME}/requirements.txt
