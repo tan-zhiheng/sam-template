@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+  Function:
+    Runtime: python3.12 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+    Architectures:
+      - arm64 # x86_64 | arm64
+
+Parameters:
+  Env:
+    Type: String
+    Default: dev
+    Description: Parameter for getting the deployment environment
+  # SecurityGroupIds:
+  #   Type: String
+  #   Description: Security Group Ids. Divided by comma
+  # SubnetIds:
+  #   Type: String
+  #   Description: Subnet Ids. Divided by comma
+
+Resources:
+  # Func0:
+  #   Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  #   Properties:
+  #     FunctionName: !Sub ${Env}-function-name
+  #     Description: api function
+  #     AutoPublishAlias: !Ref Env
+  #     AutoPublishAliasAllProperties: true
+  #     CodeUri: ../ApiFunctions
+  #     Handler: main.lambda_handler
+  #     Role: arn:aws:iam::965163745124:role/LambdaExecutionRole
+  #     Timeout: 60
+  #     MemorySize: 128
+  #     Events:
+  #       ApiEvent0:
+  #         Type: Api
+  #         Properties:
+  #           Path: /
+  #           Method: get
+  #           RestApiId: !Ref API
+  #       # ApiEvent1:
+  #       #   Type: Api
+  #       #   Properties:
+  #       #     Path: /{type}
+  #       #     Method: get
+  #       #     RestApiId: !Ref API
+  #     VpcConfig:
+  #       SecurityGroupIds: !Split [',', !Ref SecurityGroupIds]
+  #       SubnetIds: !Split [',', !Ref SubnetIds]
+  #     # Environment: # optional
+  #     #   Variables:
+  #     #     ENV_VAR_1: !Ref ENV_VAR_1
+  #     #     ENV_VAR_N: !Ref ENV_VAR_N
+  # Func0LogGroup:
+  #   Type: AWS::Logs::LogGroup
+  #   Properties:
+  #     LogGroupName: !Sub /aws/lambda/${Func0}
+  #     RetentionInDays: 30
+
+  # ApiGwAccountConfig:
+  #   Type: AWS::ApiGateway::Account
+  #   Properties:
+  #     CloudWatchRoleArn:
+
+  API:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: sam-test # A name for the API Gateway RestApi resource
+      OpenApiVersion: '3.0.1' # prevent auto create Stage
+      DisableExecuteApiEndpoint: true # Specifies whether clients can invoke your API by using the default execute-api endpoint.
+      EndpointConfiguration:
+        Type: REGIONAL # EDGE | REGIONAL | PRIVATE
+      Domain:
+        # DomainName: your.domain.com # optional
+        # CertificateArn:
+        SecurityPolicy: TLS_1_2
+        EndpointConfiguration: REGIONAL # REGIONAL | EDGE
+        # Route53:
+        #   HostedZoneId:
+        BasePath:
+          - /
+      StageName: !Ref Env
+      AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
+      # AccessLogSetting:
+      #   DestinationArn: !GetAtt APILogGroup.Arn
+      #   Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","sourceIp":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLength":$context.responseLength,"responseLatency":$context.responseLatency,"apiGatewayErrorMessage":"$context.error.message"}'
+      # Auth: # optional.
+      #   ApiKeyRequired: true
+      #   UsagePlan: # More info https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiusageplan.html
+      #     UsagePlanName: ForDev
+      #     Description: Usage plan for this API
+      #     CreateUsagePlan: PER_API # Valid values: PER_API, SHARED, and NONE .
+      # Cors:
+      #   AllowOrigin: "'*'"
+      #   AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      #   AllowMethods: "'*'"
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: ../swagger.yaml # swaggerファイルのパス指定
+
+
+  # APILogGroup:
+  #   Type: AWS::Logs::LogGroup
+  #   Properties:
+  #     LogGroupName: /aws/apigateway/
+  #     RetentionInDays: 30
+
+  # WAFAssociation:
+  #   Type: AWS::WAFv2::WebACLAssociation
+  #   DependsOn: APIdevStage # More info https://docs.aws.amazon.com/ja_jp/serverless-application-model/latest/developerguide/sam-specification-generated-resources-api.html
+  #   Properties:
+  #     ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/${Env}
+  #     WebACLArn:
+# Outputs:
+#   FuncArn:
+#     Value: !GetAtt Func0.Arn

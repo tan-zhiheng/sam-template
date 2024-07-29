@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - sam build
+      - |
+        sam deploy  --stack-name $Env-dexweb-sam \
+                    --parameter-overrides Env=$Env \
+                                          RdsWriteEndpoint=$RdsWriteEndpoint \
+                                          RdsWriteUser=$RdsWriteUser \
+                                          RdsWritePassword=$RdsWritePassword \
+                                          RdsReadEndpoint=$RdsReadEndpoint \
+                                          RdsReadUser=$RdsReadUser \
+                                          RdsReadPassword=$RdsReadPassword \
+                                          SecurityGroupId=$SecurityGroupId \
+                                          SubnetId1=$SubnetId1 \
+                                          SubnetId2=$SubnetId2 \
+                                          SubnetId3=$SubnetId3
