@@ -70,15 +70,15 @@ Resources:
       DisableExecuteApiEndpoint: true # Specifies whether clients can invoke your API by using the default execute-api endpoint.
       EndpointConfiguration:
         Type: REGIONAL # EDGE | REGIONAL | PRIVATE
-      Domain:
-        # DomainName: your.domain.com # optional
-        # CertificateArn:
-        SecurityPolicy: TLS_1_2
-        EndpointConfiguration: REGIONAL # REGIONAL | EDGE
-        # Route53:
-        #   HostedZoneId:
-        BasePath:
-          - /
+      # Domain:
+      #   # DomainName: your.domain.com # optional
+      #   # CertificateArn:
+      #   SecurityPolicy: TLS_1_2
+      #   EndpointConfiguration: REGIONAL # REGIONAL | EDGE
+      #   # Route53:
+      #   #   HostedZoneId:
+      #   BasePath:
+      #     - /
       StageName: !Ref Env
       AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
       # AccessLogSetting:
