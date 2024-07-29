@@ -81,9 +81,9 @@ Resources:
       #     - /
       StageName: !Ref Env
       AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
-      # AccessLogSetting:
-      #   DestinationArn: !GetAtt APILogGroup.Arn
-      #   Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","sourceIp":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLength":$context.responseLength,"responseLatency":$context.responseLatency,"apiGatewayErrorMessage":"$context.error.message"}'
+      AccessLogSetting:
+        DestinationArn: !GetAtt APILogGroup.Arn
+        Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","sourceIp":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLength":$context.responseLength,"responseLatency":$context.responseLatency,"apiGatewayErrorMessage":"$context.error.message"}'
       # Auth: # optional.
       #   ApiKeyRequired: true
       #   UsagePlan: # More info https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-apiusageplan.html
@@ -100,19 +100,19 @@ Resources:
           Parameters:
             Location: ../swagger.yaml # swaggerファイルのパス指定
 
-  # APILogGroup:
-  #   Type: AWS::Logs::LogGroup
-  #   Properties:
-  #     LogGroupName: /aws/apigateway/
-  #     RetentionInDays: 30
-
-  WAFAssociation:
-    Type: AWS::WAFv2::WebACLAssociation
-    DependsOn: APIdevStage # More info https://docs.aws.amazon.com/ja_jp/serverless-application-model/latest/developerguide/sam-specification-generated-resources-api.html
+  APILogGroup:
+    Type: AWS::Logs::LogGroup
     Properties:
-      # ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/${Env}
-      ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/dev
-      WebACLArn: arn:aws:wafv2:ap-northeast-1:965163745124:regional/webacl/waf-for-sre-portal/fb30e3f1-1e0c-4d99-bced-db7cb5d85e6a
+      LogGroupName: /aws/apigateway/sam-test
+      RetentionInDays: 30
+
+  # WAFAssociation:
+  #   Type: AWS::WAFv2::WebACLAssociation
+  #   DependsOn: APIdevStage # More info https://docs.aws.amazon.com/ja_jp/serverless-application-model/latest/developerguide/sam-specification-generated-resources-api.html
+  #   Properties:
+  #     # ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/${Env}
+  #     ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/dev
+  #     WebACLArn: arn:aws:wafv2:ap-northeast-1:965163745124:regional/webacl/waf-for-sre-portal/fb30e3f1-1e0c-4d99-bced-db7cb5d85e6a
 # Outputs:
 #   FuncArn:
 #     Value: !GetAtt Func0.Arn
