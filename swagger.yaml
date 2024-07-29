@@ -42,7 +42,7 @@ paths:
       x-amazon-apigateway-integration:
         credentials: arn:aws:iam::965163745124:role/APIGatewayExecutionRole
         httpMethod: GET
-        uri: arn:aws:apigateway:us-west-2:s3:path/{bucket}
+        uri: arn:aws:apigateway:ap-northeast-1:s3:path/{bucket}
         responses:
           4\d{2}:
             statusCode: '400'
@@ -92,7 +92,7 @@ paths:
       x-amazon-apigateway-integration:
         credentials: arn:aws:iam::965163745124:role/APIGatewayExecutionRole
         httpMethod: PUT
-        uri: arn:aws:apigateway:us-west-2:s3:path/{bucket}
+        uri: arn:aws:apigateway:ap-northeast-1:s3:path/{bucket}
         responses:
           4\d{2}:
             statusCode: '400'
@@ -138,7 +138,7 @@ paths:
       x-amazon-apigateway-integration:
         credentials: arn:aws:iam::965163745124:role/APIGatewayExecutionRole
         httpMethod: DELETE
-        uri: arn:aws:apigateway:us-west-2:s3:path/{bucket}
+        uri: arn:aws:apigateway:ap-northeast-1:s3:path/{bucket}
         responses:
           4\d{2}:
             statusCode: '400'
@@ -189,7 +189,7 @@ paths:
       x-amazon-apigateway-integration:
         credentials: arn:aws:iam::965163745124:role/APIGatewayExecutionRole
         httpMethod: GET
-        uri: arn:aws:apigateway:us-west-2:s3:path/{bucket}/{object}
+        uri: arn:aws:apigateway:ap-northeast-1:s3:path/{bucket}/{object}
         responses:
           4\d{2}:
             statusCode: '400'
@@ -244,7 +244,7 @@ paths:
       x-amazon-apigateway-integration:
         credentials: arn:aws:iam::965163745124:role/APIGatewayExecutionRole
         httpMethod: PUT
-        uri: arn:aws:apigateway:us-west-2:s3:path/{bucket}/{object}
+        uri: arn:aws:apigateway:ap-northeast-1:s3:path/{bucket}/{object}
         responses:
           4\d{2}:
             statusCode: '400'
@@ -296,7 +296,7 @@ paths:
       x-amazon-apigateway-integration:
         credentials: arn:aws:iam::965163745124:role/APIGatewayExecutionRole
         httpMethod: DELETE
-        uri: arn:aws:apigateway:us-west-2:s3:path/{bucket}/{object}
+        uri: arn:aws:apigateway:ap-northeast-1:s3:path/{bucket}/{object}
         responses:
           4\d{2}:
             statusCode: '400'
@@ -344,7 +344,7 @@ paths:
       x-amazon-apigateway-integration:
         credentials: arn:aws:iam::965163745124:role/APIGatewayExecutionRole
         httpMethod: HEAD
-        uri: arn:aws:apigateway:us-west-2:s3:path/{bucket}/{object}
+        uri: arn:aws:apigateway:ap-northeast-1:s3:path/{bucket}/{object}
         responses:
           4\d{2}:
             statusCode: '400'
@@ -388,7 +388,7 @@ paths:
       x-amazon-apigateway-integration:
         credentials: arn:aws:iam::965163745124:role/APIGatewayExecutionRole
         httpMethod: GET
-        uri: arn:aws:apigateway:us-west-2:s3:path//
+        uri: arn:aws:apigateway:ap-northeast-1:s3:path//
         responses:
           4\d{2}:
             statusCode: '400'
