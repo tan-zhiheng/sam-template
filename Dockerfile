@@ -8,6 +8,7 @@ RUN cd /var/task && \
 
 FROM bref/php-82 as app
 COPY --from=builder /var/task/vendor /var/task/vendor
+COPY --from=builder /var/task/composer.json /var/task/composer.json
 COPY app /var/task/app
 COPY bootstrap /var/task/bootstrap
 COPY config /var/task/config
