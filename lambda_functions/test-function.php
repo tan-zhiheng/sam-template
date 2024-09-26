@@ -14,7 +14,10 @@ $app->make(Illuminate\Contracts\Http\Kernel::class)->bootstrap();
 
 return function ($event, Context $context) {
     echo json_encode($event);
-    $s3Client = new S3Client();
+    $s3Client = new S3Client([
+        'region'  => env('AWS_REGION'),
+		'version' => 'latest',
+    ]);
     $result = $s3Client->listBuckets();
     echo json_encode($result['Buckets']);
 };
