@@ -11,6 +11,7 @@
         "php": "^8.2",
         "aws/aws-sdk-php": "*",
         "bref/bref": "*",
+        "bref/laravel-bridge": "*",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9"
     },
