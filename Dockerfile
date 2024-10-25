@@ -1,6 +1,3 @@
-FROM nginx:alpine
+FROM caddy
 
-COPY default.conf /etc/nginx/conf.d/
-COPY index.html /usr/share/nginx/html/
-
-EXPOSE 8080
+COPY index.html /usr/share/caddy
