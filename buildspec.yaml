@@ -4,4 +4,4 @@ phases:
   build:
     commands:
       - sam build
-      - sam deploy
+      - sam deploy --image-repository test
