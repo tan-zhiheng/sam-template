@@ -4,4 +4,4 @@ phases:
   build:
     commands:
       - sam build
-      - sam deploy --image-repository test
+      - sam deploy --image-repository 965163745124.dkr.ecr.ap-southeast-1.amazonaws.com/test
