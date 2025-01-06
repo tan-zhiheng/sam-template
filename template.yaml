@@ -48,6 +48,7 @@ Resources:
       AutoPublishAliasAllProperties: true
       CodeUri: ./functions
       Handler: app.handler
+      Role: arn:aws:iam::965163745124:role/LambdaExecutionRole
       Timeout: 60
       MemorySize: 128
   Func1LogGroup:
