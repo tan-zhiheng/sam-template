@@ -1,11 +1,11 @@
 Transform: AWS::Serverless-2016-10-31
 
-# Parameters:
-#   Env:
-#     Type: String
-#     Default: dev
-#     Description: Parameter for getting the deployment environment
-#   SecurityGroupIds:
+Parameters:
+  Env:
+    Type: String
+    Default: dev
+    Description: Parameter for getting the deployment environment
+  # SecurityGroupIds:
 #     Type: String
 #     Description: Security Group Ids. Divided by comma
 #   SubnetIds:
@@ -13,77 +13,20 @@ Transform: AWS::Serverless-2016-10-31
 #     Description: Subnet Ids. Divided by comma
 
 Resources:
-  # ScheduleFunctions:
-  #   Type: AWS::Serverless::Application
-  #   Properties:
-  #     Location: ./templates/ScheduleFunctions.yaml # 実際のテンプレート名に変更してください
-  #     Parameters:
-  #       Env: !Ref Env
-  #       SecurityGroupId: !Ref SecurityGroupIds
-  #       SubnetId1: !Ref SubnetIds
-  APIs:
-    Type: AWS::Serverless::Application
+  Func0:
+    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
-      Location: ./templates/APIs.yaml # 実際のテンプレート名に変更してください
-      # Parameters:
-      #   Env: !Ref Env
-      #   SecurityGroupId: !Ref SecurityGroupIds
-      #   SubnetId1: !Ref SubnetIds
-  # HealthCareDxKonkeRegist:
-  #   Type: AWS::Serverless::Application
-  #   Properties:
-  #     Location: ./templates/HealthCareDxKonkeRegist.yaml # 実際のテンプレート名に変更してください
-  #     Parameters:
-  #       Env: !Ref Env
-  #       RdsWriteEndpoint: !Ref RdsWriteEndpoint
-  #       RdsWriteUser: !Ref RdsWriteUser
-  #       RdsWritePassword: !Ref RdsWritePassword
-  #       RdsReadEndpoint: !Ref RdsReadEndpoint
-  #       RdsReadUser: !Ref RdsReadUser
-  #       RdsReadPassword: !Ref RdsReadPassword
-  # HealthCareDxLabeledDataAccumulating:
-  #   Type: AWS::Serverless::Application
-  #   Properties:
-  #     Location: ./templates/HealthCareDxLabeledDataAccumulating.yaml # 実際のテンプレート名に変更してください
-  #     Parameters:
-  #       Env: !Ref Env
-  #       RdsWriteEndpoint: !Ref RdsWriteEndpoint
-  #       RdsWriteUser: !Ref RdsWriteUser
-  #       RdsWritePassword: !Ref RdsWritePassword
-  #       RdsReadEndpoint: !Ref RdsReadEndpoint
-  #       RdsReadUser: !Ref RdsReadUser
-  #       RdsReadPassword: !Ref RdsReadPassword
-  #       SecurityGroupId: !Ref SecurityGroupId
-  #       SubnetId1: !Ref SubnetId1
-  #       SubnetId2: !Ref SubnetId2
-  #       SubnetId3: !Ref SubnetId3
-  # HealthCareDXLabeling:
-  #   Type: AWS::Serverless::Application
-  #   Properties:
-  #     Location: ./templates/HealthCareDXLabeling.yaml # 実際のテンプレート名に変更してください
-  #     Parameters:
-  #       Env: !Ref Env
-  #       RdsWriteEndpoint: !Ref RdsWriteEndpoint
-  #       RdsWriteUser: !Ref RdsWriteUser
-  #       RdsWritePassword: !Ref RdsWritePassword
-  #       RdsReadEndpoint: !Ref RdsReadEndpoint
-  #       RdsReadUser: !Ref RdsReadUser
-  #       RdsReadPassword: !Ref RdsReadPassword
-  #       ChildFuncArn: !GetAtt HealthCareDxLabeledDataAccumulating.Outputs.FuncArn
-  # HealthCareDxExecution:
-  #   Type: AWS::Serverless::Application
-  #   Properties:
-  #     Location: ./templates/HealthCareDxExecution.yaml # 実際のテンプレート名に変更してください
-  #     Parameters:
-  #       Env: !Ref Env
-  #       RdsWriteEndpoint: !Ref RdsWriteEndpoint
-  #       RdsWriteUser: !Ref RdsWriteUser
-  #       RdsWritePassword: !Ref RdsWritePassword
-  #       RdsReadEndpoint: !Ref RdsReadEndpoint
-  #       RdsReadUser: !Ref RdsReadUser
-  #       RdsReadPassword: !Ref RdsReadPassword
-  #       SecurityGroupId: !Ref SecurityGroupId
-  #       SubnetId1: !Ref SubnetId1
-  #       SubnetId2: !Ref SubnetId2
-  #       SubnetId3: !Ref SubnetId3
-  #       ChildFuncArn: !GetAtt HealthCareDXLabeling.Outputs.FuncArn
+      FunctionName: !Sub ${Env}-function-name
+      Description: api function
+      AutoPublishAlias: !Ref Env
+      AutoPublishAliasAllProperties: true
+      PackageType: Image
+      ImageUri: 965163745124.dkr.ecr.ap-southeast-1.amazonaws.com/test:php-lambda-latest
+      Role: arn:aws:iam::965163745124:role/LambdaExecutionRole
+      Timeout: 60
+      MemorySize: 128
+  Func0LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${Func0}
+      RetentionInDays: 30
