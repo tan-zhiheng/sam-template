@@ -1,10 +1,10 @@
 Transform: AWS::Serverless-2016-10-31
 
-Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
-  Function:
-    Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-    Architectures:
-      - arm64 # x86_64 | arm64
+# Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+#   Function:
+#     Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+#     Architectures:
+#       - arm64 # x86_64 | arm64
 
 Parameters:
   Env:
@@ -41,6 +41,7 @@ Resources:
   Func1:
     Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
+      Runtime: python3.11
       FunctionName: !Sub ${Env}-function-name1
       Description: api function
       AutoPublishAlias: !Ref Env
