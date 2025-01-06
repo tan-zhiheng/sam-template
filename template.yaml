@@ -1,5 +1,11 @@
 Transform: AWS::Serverless-2016-10-31
 
+Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+  Function:
+    Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+    Architectures:
+      - arm64 # x86_64 | arm64
+
 Parameters:
   Env:
     Type: String
@@ -25,8 +31,26 @@ Resources:
       Role: arn:aws:iam::965163745124:role/LambdaExecutionRole
       Timeout: 60
       MemorySize: 128
+      Architectures:
+        - x86_64 # x86_64 | arm64
   Func0LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/lambda/${Func0}
+      RetentionInDays: 30
+  Func1:
+    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      FunctionName: !Sub ${Env}-function-name1
+      Description: api function
+      AutoPublishAlias: !Ref Env
+      AutoPublishAliasAllProperties: true
+      CodeUri: ./functions
+      Handler: app.handler
+      Timeout: 60
+      MemorySize: 128
+  Func1LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${Func1}
       RetentionInDays: 30
