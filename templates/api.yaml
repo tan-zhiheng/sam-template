@@ -71,7 +71,7 @@ Resources:
     Properties:
       FunctionName: !Sub ${Env}-api-test
       Runtime: python3.11
-      CodeUri: functions/
+      CodeUri: ../functions/
       Handler: app.handler
       Role: !Ref LambdaExecutionRole
       Timeout: 10
