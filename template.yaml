@@ -1,58 +1,63 @@
 Transform: AWS::Serverless-2016-10-31
 
-# Globals: # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
-#   Function:
-#     Runtime: python3.11 # Supported Runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-#     Architectures:
-#       - arm64 # x86_64 | arm64
-
-Parameters:
+Parameters: # パラメータ定義、動的にSAMテンプレートを制御するため
   Env:
     Type: String
     Default: dev
     Description: Parameter for getting the deployment environment
-  # SecurityGroupIds:
-#     Type: String
-#     Description: Security Group Ids. Divided by comma
-#   SubnetIds:
-#     Type: String
-#     Description: Subnet Ids. Divided by comma
+  RdsWriteEndpoint:
+    Type: String
+    Description: RDS write endpoint
+  RdsWriteUser:
+    Type: String
+    Description: RDS write user
+  RdsWritePassword:
+    Type: String
+    Description: RDS write password
+  RdsReadEndpoint:
+    Type: String
+    Description: RDS read endpoint
+  RdsReadUser:
+    Type: String
+    Description: RDS read user
+  RdsReadPassword:
+    Type: String
+    Description: RDS read password
+  ApiWafArn:
+    Type: String
+    Description: WAF Arn for public api gateway.
+  ApiDomain:
+    Type: String
+    Description: Domain for public api gateway.
+  CertificateArn:
+    Type: String
+    Description: SSL certificate arn for api domain.
+  HostedZoneId:
+    Type: String
+    Description: Route53 zone id for api domain setting.
+  SecurityGroupIds:
+    Type: String
+    Description: Security Group Ids. Divided by comma(,)
+  SubnetIds:
+    Type: String
+    Description: Subnet Ids. Divided by comma(,)
 
 Resources:
-  Func0:
-    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  API:
+    Type: AWS::Serverless::Application
     Properties:
-      FunctionName: !Sub ${Env}-function-name
-      Description: api function
-      AutoPublishAlias: !Ref Env
-      AutoPublishAliasAllProperties: true
-      PackageType: Image
-      ImageUri: 965163745124.dkr.ecr.ap-southeast-1.amazonaws.com/test:php-lambda-latest
-      Role: arn:aws:iam::965163745124:role/LambdaExecutionRole
-      Timeout: 60
-      MemorySize: 128
-      Architectures:
-        - x86_64 # x86_64 | arm64
-  Func0LogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/lambda/${Func0}
-      RetentionInDays: 30
-  Func1:
-    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
-    Properties:
-      Runtime: python3.11
-      FunctionName: !Sub ${Env}-function-name1
-      Description: api function
-      AutoPublishAlias: !Ref Env
-      AutoPublishAliasAllProperties: true
-      CodeUri: ./functions
-      Handler: app.handler
-      Role: arn:aws:iam::965163745124:role/LambdaExecutionRole
-      Timeout: 60
-      MemorySize: 128
-  Func1LogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/lambda/${Func1}
-      RetentionInDays: 30
+      Location: ./templates/api.yaml # 実際のテンプレートファイルの居場所を指定
+      Parameters: # パラメータをapi.yamlテンプレートに渡す
+        Env: !Ref Env
+        RdsWriteEndpoint: !Ref RdsWriteEndpoint
+        RdsWriteUser: !Ref RdsWriteUser
+        RdsWritePassword: !Ref RdsWritePassword
+        RdsReadEndpoint: !Ref RdsReadEndpoint
+        RdsReadUser: !Ref RdsReadUser
+        RdsReadPassword: !Ref RdsReadPassword
+        ApiWafArn: !Ref ApiWafArn
+        ApiDomain: !Ref ApiDomain
+        CertificateArn: !Ref CertificateArn
+        HostedZoneId: !Ref HostedZoneId
+        SecurityGroupIds: !Ref SecurityGroupIds
+        SubnetIds: !Ref SubnetIds

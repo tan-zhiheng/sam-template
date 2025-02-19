@@ -1,7 +1,30 @@
 version: 0.2
 
 phases:
+  pre_build:
+    commands:
+      - aws ssm get-parameter --with-decryption --name $BuildEnv --output text --query 'Parameter.Value' > /tmp/build_env.sh
+      - source /tmp/build_env.sh
   build:
     commands:
       - sam build
-      - sam deploy --image-repository 965163745124.dkr.ecr.ap-southeast-1.amazonaws.com/test
+  post_build:
+    commands:
+      # sam deploy
+      - echo SAM deploy started on `date`
+      - |
+        sam deploy --stack-name $Env-$StackName --no-fail-on-empty-changeset --parameter-overrides \
+            Env=$Env \
+            RdsWriteEndpoint=$RdsWriteEndpoint \
+            RdsWriteUser=$RdsWriteUser \
+            RdsWritePassword=$RdsWritePassword \
+            RdsReadEndpoint=$RdsReadEndpoint \
+            RdsReadUser=$RdsReadUser \
+            RdsReadPassword=$RdsReadPassword \
+            ApiWafArn=$ApiWafArn \
+            ApiDomain=$ApiDomain \
+            LambdaExecutionRole=$LambdaExecutionRole \
+            CertificateArn=$CertificateArn \
+            HostedZoneId=$HostedZoneId \
+            SecurityGroupIds=$SecurityGroupIds \
+            SubnetIds=$SubnetIds

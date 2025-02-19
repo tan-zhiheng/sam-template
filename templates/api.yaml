@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  Env:
+    Type: String
+    Default: dev
+    Description: Parameter for getting the deployment environment
+  RdsWriteEndpoint:
+    Type: String
+    Description: RDS write endpoint
+  RdsWriteUser:
+    Type: String
+    Description: RDS write user
+  RdsWritePassword:
+    Type: String
+    Description: RDS write password
+  RdsReadEndpoint:
+    Type: String
+    Description: RDS read endpoint
+  RdsReadUser:
+    Type: String
+    Description: RDS read user
+  RdsReadPassword:
+    Type: String
+    Description: RDS read password
+  LambdaExecutionRole:
+    Type: String
+    Description: Service role arn for lambda functions.
+  ApiWafArn:
+    Type: String
+    Description: WAF Arn for api gateway.
+
+Resources:
+  API:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub ${Env}-test # A name for the API Gateway RestApi resource
+      OpenApiVersion: '3.0.1' # prevent auto create Stage
+      DisableExecuteApiEndpoint: true # Specifies whether clients can invoke your API by using the default execute-api endpoint.
+      EndpointConfiguration:
+        Type: REGIONAL # EDGE | REGIONAL | PRIVATE
+      StageName: !Ref Env
+      AlwaysDeploy: false # Always deploys the API, even when no changes to the API have been detected.
+      AccessLogSetting:
+        DestinationArn: !GetAtt APILogGroup.Arn
+        Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","sourceIp":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLength":$context.responseLength,"responseLatency":$context.responseLatency,"apiGatewayErrorMessage":"$context.error.message"}'
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowMethods: "'*'"
+      Tags:
+        Environment: !Ref Env
+  APILogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/apigateway/
+      RetentionInDays: 7
+      Tags:
+        - Key: Environment
+          Value: !Ref Env
+
+  WAFAssociation:
+    Type: AWS::WAFv2::WebACLAssociation
+    DependsOn: APIStage # More info https://docs.aws.amazon.com/ja_jp/serverless-application-model/latest/developerguide/sam-specification-generated-resources-api.html
+    Properties:
+      ResourceArn: !Sub arn:partition:apigateway:${AWS::Region}::/restapis/${API}/stages/${Env}
+      WebACLArn: !Ref ApiWafArn
+
+  Func0:
+    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      FunctionName: !Sub ${Env}-api-test
+      Runtime: python3.11
+      CodeUri: functions/
+      Handler: app.handler
+      Role: !Ref LambdaExecutionRole
+      Timeout: 10
+      MemorySize: 128
+      Events:
+        ApiEvent0:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            RestApiId: !Ref API
+      Tags:
+        Environment: !Ref Env
+  Func0LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${Func0}
+      RetentionInDays: 7
+      Tags:
+        - Key: Environment
+          Value: !Ref Env
