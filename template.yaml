@@ -60,8 +60,8 @@ Resources:
         RdsReadUser: !Ref RdsReadUser
         RdsReadPassword: !Ref RdsReadPassword
         ApiWafArn: !Ref ApiWafArn
-        ApiDomain: !Ref ApiDomain
-        CertificateArn: !Ref CertificateArn
-        HostedZoneId: !Ref HostedZoneId
-        SecurityGroupIds: !Ref SecurityGroupIds
-        SubnetIds: !Ref SubnetIds
+        # ApiDomain: !Ref ApiDomain
+        # CertificateArn: !Ref CertificateArn
+        # HostedZoneId: !Ref HostedZoneId
+        # SecurityGroupIds: !Ref SecurityGroupIds
+        # SubnetIds: !Ref SubnetIds
