@@ -17,10 +17,10 @@ phases:
             Env=$Env \
             RdsWriteEndpoint=$RdsWriteEndpoint \
             RdsWriteUser=$RdsWriteUser \
-            RdsWritePassword=$RdsWritePassword \
+            RdsWritePassword=a \
             RdsReadEndpoint=$RdsReadEndpoint \
             RdsReadUser=$RdsReadUser \
-            RdsReadPassword=$RdsReadPassword \
+            RdsReadPassword=a \
             ApiWafArn=$ApiWafArn \
             ApiDomain=$ApiDomain \
             LambdaExecutionRole=$LambdaExecutionRole \
