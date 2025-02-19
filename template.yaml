@@ -5,6 +5,9 @@ Parameters: # パラメータ定義、動的にSAMテンプレートを制御す
     Type: String
     Default: dev
     Description: Parameter for getting the deployment environment
+  LambdaExecutionRole:
+    Type: String
+    Description: Service role arn for lambda functions.
   RdsWriteEndpoint:
     Type: String
     Description: RDS write endpoint
@@ -49,6 +52,7 @@ Resources:
       Location: ./templates/api.yaml # 実際のテンプレートファイルの居場所を指定
       Parameters: # パラメータをapi.yamlテンプレートに渡す
         Env: !Ref Env
+        LambdaExecutionRole: !Ref LambdaExecutionRole
         RdsWriteEndpoint: !Ref RdsWriteEndpoint
         RdsWriteUser: !Ref RdsWriteUser
         RdsWritePassword: !Ref RdsWritePassword
