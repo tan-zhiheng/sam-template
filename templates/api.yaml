@@ -32,6 +32,14 @@ Resources:
         AllowMethods: "'*'"
       Tags:
         Environment: !Ref Env
+  APILogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/apigateway/${Env}-test-api
+      RetentionInDays: 7
+      Tags:
+        - Key: Environment
+          Value: !Ref Env
 
   WAFAssociation:
     Type: AWS::WAFv2::WebACLAssociation
