@@ -15,4 +15,5 @@ phases:
         sam deploy --stack-name $Env-$StackName --no-fail-on-empty-changeset --parameter-overrides \
             Env=$Env \
             ApiWafArn=$ApiWafArn \
+            SchedulerExecutionRole=$SchedulerExecutionRole \
             LambdaExecutionRole=$LambdaExecutionRole
