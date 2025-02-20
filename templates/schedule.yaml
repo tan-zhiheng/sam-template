@@ -21,7 +21,7 @@ Resources:
       Description: test
       Runtime: python3.11
       CodeUri: ../functions/
-      Handler: app.handler
+      Handler: app.lambda_handler
       Role: !Ref LambdaExecutionRole
       Architectures:
         - arm64
