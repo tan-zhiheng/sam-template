@@ -11,6 +11,12 @@ Parameters:
   ApiWafArn:
     Type: String
     Description: WAF Arn for api gateway.
+  SecurityGroupIds:
+    Type: String
+    Description: Security group ids divided by ',' .
+  SubnetIds:
+    Type: String
+    Description: Subnet ids divided by ',' .
 
 Resources:
   API:
@@ -60,6 +66,9 @@ Resources:
         - arm64
       Timeout: 10
       MemorySize: 128
+      ReservedConcurrentExecutions: 2
+      ProvisionedConcurrencyConfig:
+        ProvisionedConcurrentExecutions: 1
       Events:
         ApiEvent0:
           Type: Api
@@ -67,6 +76,9 @@ Resources:
             Path: /
             Method: get
             RestApiId: !Ref API
+      VpcConfig:
+        SecurityGroupIds: !Split [',', !Ref SecurityGroupIds]
+        SubnetIds: !Split [',', !Ref SubnetIds]
       Tags:
         Environment: !Ref Env
   Func0LogGroup:

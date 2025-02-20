@@ -14,6 +14,12 @@ Parameters:
   SchedulerExecutionRole:
     Type: String
     Description: Excution Role ARN for scheduler.
+  SecurityGroupIds:
+    Type: String
+    Description: Security group ids divided by ',' .
+  SubnetIds:
+    Type: String
+    Description: Subnet ids divided by ',' .
 
 Resources:
   Api:
@@ -24,6 +30,8 @@ Resources:
         Env: !Ref Env
         LambdaExecutionRole: !Ref LambdaExecutionRole
         ApiWafArn: !Ref ApiWafArn
+        SecurityGroupIds: !Ref SecurityGroupIds
+        SubnetIds: !Ref SubnetIds
   Sqs:
     Type: AWS::Serverless::Application
     Properties:

@@ -16,4 +16,6 @@ phases:
             Env=$Env \
             ApiWafArn=$ApiWafArn \
             SchedulerExecutionRole=$SchedulerExecutionRole \
+            SecurityGroupIds=$SecurityGroupIds \
+            SubnetIds=$SubnetIds \
             LambdaExecutionRole=$LambdaExecutionRole
