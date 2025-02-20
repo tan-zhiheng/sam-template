@@ -18,7 +18,7 @@ Resources:
     Properties:
       Name: !Sub ${Env}-test-api # A name for the API Gateway RestApi resource
       OpenApiVersion: '3.0.1' # prevent auto create Stage
-      DisableExecuteApiEndpoint: true # Specifies whether clients can invoke your API by using the default execute-api endpoint.
+      DisableExecuteApiEndpoint: false # Specifies whether clients can invoke your API by using the default execute-api endpoint.
       EndpointConfiguration:
         Type: REGIONAL # EDGE | REGIONAL | PRIVATE
       StageName: !Ref Env
