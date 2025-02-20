@@ -59,6 +59,8 @@ Resources:
           Type: SQS
           Properties:
             Queue: !GetAtt SQS0.Arn
+            BatchSize: 1
+            MaximumBatchingWindowInSeconds: 0
             ScalingConfig:
               MaximumConcurrency: 1
             Enabled: true
