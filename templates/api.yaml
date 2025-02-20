@@ -66,6 +66,8 @@ Resources:
         - arm64
       Timeout: 10
       MemorySize: 128
+      AutoPublishAlias: !Ref Env
+      AutoPublishAliasAllProperties: true
       ReservedConcurrentExecutions: 2
       ProvisionedConcurrencyConfig:
         ProvisionedConcurrentExecutions: 1
