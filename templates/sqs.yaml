@@ -52,6 +52,8 @@ Resources:
       Timeout: 10
       MemorySize: 128
       ReservedConcurrentExecutions: 1
+      AutoPublishAlias: !Ref Env
+      AutoPublishAliasAllProperties: true
       ProvisionedConcurrencyConfig:
         ProvisionedConcurrentExecutions: 1
       Environment:
