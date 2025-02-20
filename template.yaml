@@ -11,6 +11,9 @@ Parameters:
   ApiWafArn:
     Type: String
     Description: WAF Arn for api gateway.
+  SchedulerExecutionRole:
+    Type: String
+    Description: Excution Role ARN for scheduler.
 
 Resources:
   Api:
@@ -21,3 +24,18 @@ Resources:
         Env: !Ref Env
         LambdaExecutionRole: !Ref LambdaExecutionRole
         ApiWafArn: !Ref ApiWafArn
+  Sqs:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./templates/sqs.yaml
+      Parameters:
+        Env: !Ref Env
+        LambdaExecutionRole: !Ref LambdaExecutionRole
+  Schedule:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./templates/schedule.yaml
+      Parameters:
+        Env: !Ref Env
+        LambdaExecutionRole: !Ref LambdaExecutionRole
+        SchedulerExecutionRole: !Ref SchedulerExecutionRole

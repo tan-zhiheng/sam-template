@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  Env:
+    Type: String
+    Default: dev
+    Description: Parameter for getting the deployment environment
+  LambdaExecutionRole:
+    Type: String
+    Description: Service role arn for lambda functions.
+  SchedulerExecutionRole:
+    Type: String
+    Description: Excution Role ARN for scheduler.
+
+Resources:
+  Func0:
+    Type: AWS::Serverless::Function # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      FunctionName: !Sub ${Env}-test-schedule
+      Description: test
+      Runtime: python3.11
+      CodeUri: ../functions/
+      Handler: app.handler
+      Role: !Ref LambdaExecutionRole
+      Architectures:
+        - arm64
+      Timeout: 10
+      MemorySize: 128
+      ReservedConcurrentExecutions: 1
+      ProvisionedConcurrencyConfig:
+        ProvisionedConcurrentExecutions: 1
+      Environment:
+        Variables:
+          key: value
+      Events:
+        ScheduleEvent:
+          Type: ScheduleV2 # More info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedulev2.html
+          Properties:
+            Name: !Sub lambda-schedule-${Env}-test-schedule
+            OmitName: false
+            ## at expression - at(yyyy-MM-ddTHH:mm:ss)
+            ## rate expression - rate(value unit) unit could be <minute | minutes | hour | hours | day | days>  example: rate(1 minute)
+            ## cron expression - cron(fields) fields consists of six fields separated by white spaces <minutes hours day_of_month month day_of_week year>
+            ScheduleExpression: cron(0 12 * * ? *)
+            ScheduleExpressionTimezone: 'Asia/Tokyo'
+            # The ARN of the IAM role that EventBridge Scheduler will use for the target when the schedule is invoked.
+            RoleArn: !Ref SchedulerExecutionRole
+            RetryPolicy:
+              MaximumRetryAttempts: 0 # 0 to disable
+            State: ENABLED # DISABLED | ENABLED
+
+      Tags:
+        Environment: !Ref Env
+  Func0LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${Func0}
+      RetentionInDays: 7
+      Tags:
+        - Key: Environment
+          Value: !Ref Env
