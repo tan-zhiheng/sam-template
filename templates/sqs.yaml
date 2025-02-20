@@ -45,17 +45,12 @@ Resources:
       Description: test
       Runtime: python3.11
       CodeUri: ../functions/
-      Handler: app.lambda_handler
+      Handler: app.handler
       Role: !Ref LambdaExecutionRole
       Architectures:
         - arm64
       Timeout: 10
       MemorySize: 128
-      ReservedConcurrentExecutions: 1
-      AutoPublishAlias: !Ref Env
-      AutoPublishAliasAllProperties: true
-      ProvisionedConcurrencyConfig:
-        ProvisionedConcurrentExecutions: 1
       Environment:
         Variables:
           key: value
