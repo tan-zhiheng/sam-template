@@ -1,6 +1,6 @@
 Transform: AWS::Serverless-2016-10-31
 
-Parameters: # パラメータ定義、動的にSAMテンプレートを制御するため
+Parameters:
   Env:
     Type: String
     Default: dev
@@ -8,60 +8,16 @@ Parameters: # パラメータ定義、動的にSAMテンプレートを制御す
   LambdaExecutionRole:
     Type: String
     Description: Service role arn for lambda functions.
-  RdsWriteEndpoint:
-    Type: String
-    Description: RDS write endpoint
-  RdsWriteUser:
-    Type: String
-    Description: RDS write user
-  RdsWritePassword:
-    Type: String
-    Description: RDS write password
-  RdsReadEndpoint:
-    Type: String
-    Description: RDS read endpoint
-  RdsReadUser:
-    Type: String
-    Description: RDS read user
-  RdsReadPassword:
-    Type: String
-    Description: RDS read password
   ApiWafArn:
     Type: String
-    Description: WAF Arn for public api gateway.
-  ApiDomain:
-    Type: String
-    Description: Domain for public api gateway.
-  CertificateArn:
-    Type: String
-    Description: SSL certificate arn for api domain.
-  HostedZoneId:
-    Type: String
-    Description: Route53 zone id for api domain setting.
-  SecurityGroupIds:
-    Type: String
-    Description: Security Group Ids. Divided by comma(,)
-  SubnetIds:
-    Type: String
-    Description: Subnet Ids. Divided by comma(,)
+    Description: WAF Arn for api gateway.
 
 Resources:
-  API:
+  Api:
     Type: AWS::Serverless::Application
     Properties:
-      Location: ./templates/api.yaml # 実際のテンプレートファイルの居場所を指定
-      Parameters: # パラメータをapi.yamlテンプレートに渡す
+      Location: ./templates/api.yaml
+      Parameters:
         Env: !Ref Env
         LambdaExecutionRole: !Ref LambdaExecutionRole
-        RdsWriteEndpoint: !Ref RdsWriteEndpoint
-        RdsWriteUser: !Ref RdsWriteUser
-        RdsWritePassword: !Ref RdsWritePassword
-        RdsReadEndpoint: !Ref RdsReadEndpoint
-        RdsReadUser: !Ref RdsReadUser
-        RdsReadPassword: !Ref RdsReadPassword
         ApiWafArn: !Ref ApiWafArn
-        # ApiDomain: !Ref ApiDomain
-        # CertificateArn: !Ref CertificateArn
-        # HostedZoneId: !Ref HostedZoneId
-        # SecurityGroupIds: !Ref SecurityGroupIds
-        # SubnetIds: !Ref SubnetIds

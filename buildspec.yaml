@@ -11,20 +11,8 @@ phases:
   post_build:
     commands:
       # sam deploy
-      - echo SAM deploy started on `date`
       - |
         sam deploy --stack-name $Env-$StackName --no-fail-on-empty-changeset --parameter-overrides \
             Env=$Env \
-            RdsWriteEndpoint=$RdsWriteEndpoint \
-            RdsWriteUser=$RdsWriteUser \
-            RdsWritePassword=a \
-            RdsReadEndpoint=$RdsReadEndpoint \
-            RdsReadUser=$RdsReadUser \
-            RdsReadPassword=a \
             ApiWafArn=$ApiWafArn \
-            ApiDomain=$ApiDomain \
-            LambdaExecutionRole=$LambdaExecutionRole \
-            CertificateArn=$CertificateArn \
-            HostedZoneId=$HostedZoneId \
-            SecurityGroupIds=$SecurityGroupIds \
-            SubnetIds=$SubnetIds
+            LambdaExecutionRole=$LambdaExecutionRole
